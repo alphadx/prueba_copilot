@@ -159,6 +159,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                     <div class="card-body">
                         <?php $form = ActiveForm::begin([
+                            'id' => 'resolucion-form',
                             'action' => ['resolve', 'id' => $model->id],
                             'method' => 'post',
                         ]); ?>
@@ -245,7 +246,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 // JavaScript for form validation
 $this->registerJs(<<<JS
-    $('form').on('beforeSubmit', function(e) {
+    $('#resolucion-form').on('beforeSubmit', function(e) {
         var resolucion = $('input[name="resolucion"]:checked').val();
         var motivo = $('#motivo').val().trim();
         
