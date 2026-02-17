@@ -35,3 +35,5 @@ Thumbs.db
 
 # Ignore logs
 *.log
+cookies.txt
+login_page.html
