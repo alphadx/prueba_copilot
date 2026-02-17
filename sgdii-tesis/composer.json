@@ -1,0 +1,24 @@
+{
+    "name": "alphadx/sgdii-tesis",
+    "description": "Sistema de Gestión Departamento Ingeniería Industrial - Módulo Tesis",
+    "keywords": ["yii2", "framework", "tesis", "sgdii"],
+    "type": "project",
+    "license": "proprietary",
+    "minimum-stability": "stable",
+    "require": {
+        "php": ">=8.0",
+        "yiisoft/yii2": "~2.0.51",
+        "yiisoft/yii2-bootstrap5": "~2.0.0",
+        "yidas/yii2-bower-asset": "~2.0.13"
+    },
+    "require-dev": {
+        "yiisoft/yii2-debug": "~2.1.0",
+        "yiisoft/yii2-gii": "~2.2.0"
+    },
+    "config": {
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
+}

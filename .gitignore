@@ -1,0 +1,22 @@
+# Ignore vendor directory
+sgdii-tesis/vendor/
+sgdii-tesis/runtime/
+sgdii-tesis/web/assets/
+
+# Ignore data and uploads
+data/
+uploads/
+
+# Ignore IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore logs
+*.log

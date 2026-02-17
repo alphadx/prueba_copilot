@@ -1,0 +1,14 @@
+services:
+  sgdii:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sgdii-tesis
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/sgdii-tesis/runtime/db
+      - ./uploads:/app/sgdii-tesis/runtime/uploads
+    environment:
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_ERROR_REPORTING=E_ALL
