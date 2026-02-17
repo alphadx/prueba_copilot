@@ -117,7 +117,7 @@ prueba_copilot/
 
 ## Características Implementadas
 
-### Sprint 1 (Actual)
+### Sprint 1 (Completado)
 - ✅ Setup completo de Docker + Docker Compose
 - ✅ Configuración de Yii2 con PHP 8.4 y SQLite3
 - ✅ Sistema de autenticación con base de datos
@@ -126,15 +126,37 @@ prueba_copilot/
 - ✅ Dashboard básico con información del usuario
 - ✅ Layout con navbar y información de usuario
 - ✅ 10 usuarios de prueba precargados
+- ✅ Modelos de datos y migraciones para todas las tablas del sistema
+
+### Sprint 2 (Actual) - Formulario de Solicitud de Tema de Tesis (STT)
+- ✅ Formulario de creación de STT con soporte para 1-2 alumnos
+- ✅ Validación dinámica según modalidad (TT, Papers, Pasantía)
+- ✅ Campos específicos para cada modalidad:
+  - **TT**: Profesores guías y revisores opcionales
+  - **Papers**: Profesor guía obligatorio
+  - **Pasantía**: Profesor guía obligatorio + información de empresa requerida
+- ✅ Generación automática de correlativo único (formato: STT-YYYY-NNNN)
+- ✅ Validación de estudiantes con tesis vigente
+- ✅ Estado inicial "Enviada" al crear STT
+- ✅ Mensajes flash de confirmación
+- ✅ Vista detallada de STT creada
+
+#### Acceso al Formulario de STT
+Para acceder al formulario de creación de STT:
+
+1. Iniciar sesión con un usuario con rol **profesor** o **admin**:
+   - Usuario: `prof.martinez` | Password: `prof123`
+   - Usuario: `admin` | Password: `admin123`
+
+2. En el dashboard, hacer clic en el botón **"Crear Solicitud"** en la tarjeta de STT
+
+3. Completar el formulario según la modalidad seleccionada
+
+4. La URL directa es: `http://localhost:8080/index.php?r=stt/create`
+
+**Nota sobre migraciones**: Las migraciones de Sprint 1 tienen un problema conocido con SQLite y `addForeignKey()`. Se proporciona un script SQL de workaround (`sgdii-tesis/workaround_create_tables.sql`) para crear las tablas manualmente si es necesario.
 
 ### Próximos Sprints
-
-#### Sprint 2 - Gestión de Solicitudes de Tesis (STT)
-- [ ] Formulario de Solicitud de Inscripción de Tema de Tesis
-- [ ] Validación de datos de alumno, carrera y modalidad
-- [ ] Asignación de profesor guía y revisores
-- [ ] Gestión de datos de empresa (para pasantías)
-- [ ] Upload de documentos de respaldo
 
 #### Sprint 3 - Evaluación y Resolución
 - [ ] Vista de resolución de STT para Comisión
