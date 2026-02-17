@@ -156,13 +156,36 @@ Para acceder al formulario de creación de STT:
 
 **Nota sobre migraciones**: Las migraciones de Sprint 1 tienen un problema conocido con SQLite y `addForeignKey()`. Se proporciona un script SQL de workaround (`sgdii-tesis/workaround_create_tables.sql`) para crear las tablas manualmente si es necesario.
 
-### Próximos Sprints
+### Sprint 3 (Completado) - Gestión de STT para Comisión de Titulación
+- ✅ Vista de gestión de STT con filtros avanzados para Comisión Evaluadora
+- ✅ Sistema de resolución de STT (aceptar, rechazar, aceptar con observaciones)
+- ✅ Campos adicionales en BD: `motivo_resolucion`, `fecha_resolucion`
+- ✅ Estados de STT: Solicitada, En revisión, Aceptada, Aceptada con observaciones, Rechazada
+- ✅ Restricción de acceso para rol `comision_evaluadora`
+- ✅ Notificaciones automáticas (simuladas con flash messages)
+- ✅ Modal para consultar tesis vigentes por profesor
+- ✅ Historial de estados y resoluciones
+- ✅ Validación de permisos por rol
 
-#### Sprint 3 - Evaluación y Resolución
-- [ ] Vista de resolución de STT para Comisión
-- [ ] Sistema de categorización (aprobada, rechazada, requiere modificaciones)
-- [ ] Confirmación de profesores guía y revisores
-- [ ] Historial de estados y resoluciones
+#### Acceso al Módulo de Comisión Evaluadora
+Para acceder a la gestión de STT:
+
+1. Iniciar sesión con un usuario con rol **comision_evaluadora**:
+   - Usuario: `prof.silva` | Password: `prof123`
+   - Usuario: `prof.morales` | Password: `prof123`
+   - Usuario: `admin` | Password: `admin123` (también tiene acceso)
+
+2. En el dashboard, hacer clic en **"Gestionar STT"** en la tarjeta de Resolución de STT
+
+3. La URL directa es: `http://localhost:8080/index.php?r=comision/index`
+
+#### Funcionalidades del Módulo
+- **Filtros avanzados**: Por modalidad, estado, fechas, y profesor guía
+- **Resolución de STT**: Aceptar, rechazar o aceptar con observaciones
+- **Consulta de carga**: Ver tesis vigentes de cada profesor antes de resolver
+- **Notificaciones**: Se envían automáticamente a alumnos y profesores involucrados
+
+### Próximos Sprints
 
 #### Sprint 4 - Reportes
 - [ ] Reporte de carga académica por profesor
