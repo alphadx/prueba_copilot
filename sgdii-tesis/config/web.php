@@ -10,7 +10,7 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'es-CL',
     'aliases' => [
-        '@bower' => '@vendor/bower-asset',
+        '@bower' => '@vendor/yidas/yii2-bower-asset/bower',
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
@@ -52,13 +52,5 @@ $config = [
     ],
     'params' => $params,
 ];
-
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-    ];
-}
 
 return $config;
