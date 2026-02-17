@@ -91,7 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 <br>
                                 <small class="text-muted">
                                     RUT: <?= Html::encode($alumno->rut) ?> | 
-                                    Carrera: <?= Html::encode($alumno->carrera->nombre) ?>
+                                    Carrera: <?= Html::encode($alumno->carreraMalla->nombre) ?>
                                 </small>
                             </li>
                         <?php endforeach; ?>
@@ -190,6 +190,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             <label for="motivo" class="form-label">Motivo / Observaciones</label>
                             <?= Html::textarea('motivo', '', [
                                 'class' => 'form-control',
+                                'id' => 'motivo',
                                 'rows' => 5,
                                 'placeholder' => 'Ingrese el motivo de rechazo o las observaciones...',
                             ]) ?>

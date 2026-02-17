@@ -222,6 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 // JavaScript for loading professor theses in modal
+$baseUrl = \yii\helpers\Url::to(['/']);
 $this->registerJs(<<<JS
     var modalProfesorTheses = document.getElementById('modalProfesorTheses');
     modalProfesorTheses.addEventListener('show.bs.modal', function (event) {
@@ -236,7 +237,7 @@ $this->registerJs(<<<JS
         modalBody.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
         
         // Load content via AJAX
-        fetch('{$baseUrl}comision/profesor-theses?id=' + profesorId, {
+        fetch('$baseUrl' + 'comision/profesor-theses?id=' + profesorId, {
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
             }
@@ -251,7 +252,4 @@ $this->registerJs(<<<JS
     });
 JS
 );
-
-$baseUrl = \yii\helpers\Url::to(['/']);
-$this->registerJs("var baseUrl = '$baseUrl';");
 ?>

@@ -52,7 +52,7 @@ $user = Yii::$app->user->identity;
                     $canAccessComision = false;
                     if (Yii::$app->user->identity->rol === 'admin') {
                         $canAccessComision = true;
-                    } elseif (Yii::$app->user->identity->rol === 'profesor') {
+                    } elseif (Yii::$app->user->identity->rol === 'profesor' || Yii::$app->user->identity->rol === 'comision_evaluadora') {
                         $profesor = \app\models\Profesor::findOne(['user_id' => Yii::$app->user->id]);
                         $canAccessComision = $profesor && $profesor->es_comision_evaluadora == 1;
                     }

@@ -38,7 +38,7 @@ class ComisionController extends Controller
                                 return true;
                             }
                             
-                            if ($user->rol === 'profesor') {
+                            if ($user->rol === 'profesor' || $user->rol === 'comision_evaluadora') {
                                 $profesor = Profesor::findOne(['user_id' => $user->id]);
                                 return $profesor && $profesor->es_comision_evaluadora == 1;
                             }
