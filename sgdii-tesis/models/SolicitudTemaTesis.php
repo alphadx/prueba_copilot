@@ -21,6 +21,8 @@ use yii\db\ActiveRecord;
  * @property string $titulo
  * @property string $documento_path
  * @property string $estado
+ * @property string $motivo_resolucion
+ * @property string $fecha_resolucion
  * @property string $fecha_creacion
  * @property string $created_at
  * @property string $updated_at
@@ -57,7 +59,8 @@ class SolicitudTemaTesis extends ActiveRecord
             [['origen_id', 'profesor_curso_id', 'nota', 'modalidad_id', 'titulo'], 'required'],
             [['origen_id', 'profesor_curso_id', 'modalidad_id', 'profesor_guia_propuesto_id', 'profesor_revisor1_propuesto_id', 'profesor_revisor2_propuesto_id', 'empresa_id'], 'integer'],
             [['nota'], 'number', 'min' => 1.0, 'max' => 7.0],
-            [['fecha_creacion', 'created_at', 'updated_at'], 'safe'],
+            [['motivo_resolucion'], 'string'],
+            [['fecha_creacion', 'fecha_resolucion', 'created_at', 'updated_at'], 'safe'],
             [['correlativo'], 'string', 'max' => 20],
             [['correlativo'], 'unique'],
             [['titulo'], 'string', 'max' => 500],
@@ -92,6 +95,8 @@ class SolicitudTemaTesis extends ActiveRecord
             'titulo' => 'Título',
             'documento_path' => 'Documento',
             'estado' => 'Estado',
+            'motivo_resolucion' => 'Motivo de Resolución',
+            'fecha_resolucion' => 'Fecha de Resolución',
             'fecha_creacion' => 'Fecha de Creación',
             'created_at' => 'Creado',
             'updated_at' => 'Actualizado',
@@ -217,5 +222,149 @@ class SolicitudTemaTesis extends ActiveRecord
     public function getHistorialEstados()
     {
         return $this->hasMany(HistorialEstado::class, ['stt_id' => 'id']);
+    }
+
+    /**
+     * Constants for STT states
+     */
+    const ESTADO_SOLICITADA = 'Solicitada';
+    const ESTADO_EN_REVISION = 'En revisión';
+    const ESTADO_ACEPTADA = 'Aceptada';
+    const ESTADO_ACEPTADA_CON_OBSERVACIONES = 'Aceptada con observaciones';
+    const ESTADO_RECHAZADA = 'Rechazada';
+    const ESTADO_CONVERTIDA_A_TT = 'Convertida a TT';
+
+    /**
+     * Get all possible states
+     * @return array
+     */
+    public static function getEstados()
+    {
+        return [
+            self::ESTADO_SOLICITADA => 'Solicitada',
+            self::ESTADO_EN_REVISION => 'En revisión',
+            self::ESTADO_ACEPTADA => 'Aceptada',
+            self::ESTADO_ACEPTADA_CON_OBSERVACIONES => 'Aceptada con observaciones',
+            self::ESTADO_RECHAZADA => 'Rechazada',
+            self::ESTADO_CONVERTIDA_A_TT => 'Convertida a TT',
+        ];
+    }
+
+    /**
+     * Get pending states (estados that can be resolved)
+     * @return array
+     */
+    public static function getEstadosPendientes()
+    {
+        return [
+            self::ESTADO_SOLICITADA,
+            self::ESTADO_EN_REVISION,
+        ];
+    }
+
+    /**
+     * Mark STT as under review
+     * @param int $userId User who performed the action
+     * @return bool
+     */
+    public function marcarEnRevision($userId)
+    {
+        $oldState = $this->estado;
+        $this->estado = self::ESTADO_EN_REVISION;
+        
+        if ($this->save(false)) {
+            $this->registrarHistorial($oldState, $this->estado, $userId, 'STT marcada en revisión');
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Resolve STT as accepted
+     * @param int $userId User who performed the action
+     * @return bool
+     */
+    public function aceptar($userId, $motivo = null)
+    {
+        $oldState = $this->estado;
+        $this->estado = self::ESTADO_ACEPTADA;
+        $this->fecha_resolucion = date('Y-m-d H:i:s');
+        if ($motivo) {
+            $this->motivo_resolucion = $motivo;
+        }
+        
+        if ($this->save(false)) {
+            $this->registrarHistorial($oldState, $this->estado, $userId, $motivo ?: 'STT aceptada');
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Resolve STT as accepted with observations
+     * @param int $userId User who performed the action
+     * @param string $motivo Observations
+     * @return bool
+     */
+    public function aceptarConObservaciones($userId, $motivo)
+    {
+        $oldState = $this->estado;
+        $this->estado = self::ESTADO_ACEPTADA_CON_OBSERVACIONES;
+        $this->fecha_resolucion = date('Y-m-d H:i:s');
+        $this->motivo_resolucion = $motivo;
+        
+        if ($this->save(false)) {
+            $this->registrarHistorial($oldState, $this->estado, $userId, $motivo);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Resolve STT as rejected
+     * @param int $userId User who performed the action
+     * @param string $motivo Reason for rejection
+     * @return bool
+     */
+    public function rechazar($userId, $motivo)
+    {
+        $oldState = $this->estado;
+        $this->estado = self::ESTADO_RECHAZADA;
+        $this->fecha_resolucion = date('Y-m-d H:i:s');
+        $this->motivo_resolucion = $motivo;
+        
+        if ($this->save(false)) {
+            $this->registrarHistorial($oldState, $this->estado, $userId, $motivo);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Register state change in history
+     * @param string $oldState
+     * @param string $newState
+     * @param int $userId
+     * @param string $motivo
+     */
+    private function registrarHistorial($oldState, $newState, $userId, $motivo = null)
+    {
+        $historial = new HistorialEstado();
+        $historial->stt_id = $this->id;
+        $historial->estado_anterior = $oldState;
+        $historial->estado_nuevo = $newState;
+        $historial->motivo = $motivo;
+        $historial->usuario_id = $userId;
+        $historial->fecha = date('Y-m-d H:i:s');
+        $historial->save(false);
+    }
+
+    /**
+     * Check if STT can be resolved
+     * @return bool
+     */
+    public function puedeSerResuelta()
+    {
+        return in_array($this->estado, self::getEstadosPendientes());
     }
 }

@@ -48,7 +48,20 @@ $user = Yii::$app->user->identity;
                         <i class="bi bi-check-circle"></i> Resolución de STT
                     </h5>
                     <p class="card-text">Evaluación y resolución de solicitudes por parte de la Comisión de Titulación.</p>
-                    <button class="btn btn-secondary" disabled>Próximamente</button>
+                    <?php
+                    $canAccessComision = false;
+                    if (Yii::$app->user->identity->rol === 'admin') {
+                        $canAccessComision = true;
+                    } elseif (Yii::$app->user->identity->rol === 'profesor') {
+                        $profesor = \app\models\Profesor::findOne(['user_id' => Yii::$app->user->id]);
+                        $canAccessComision = $profesor && $profesor->es_comision_evaluadora == 1;
+                    }
+                    ?>
+                    <?php if ($canAccessComision): ?>
+                        <?= Html::a('Gestionar STT', ['/comision/index'], ['class' => 'btn btn-success']) ?>
+                    <?php else: ?>
+                        <button class="btn btn-secondary" disabled>Solo Comisión Evaluadora</button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
