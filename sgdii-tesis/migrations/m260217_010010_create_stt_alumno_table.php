@@ -33,36 +33,9 @@ class m260217_010010_create_stt_alumno_table extends Migration
             true
         );
 
-        // Add foreign keys
-        $this->addForeignKey(
-            'fk-stt_alumno-stt_id',
-            '{{%stt_alumno}}',
-            'stt_id',
-            '{{%solicitud_tema_tesis}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-stt_alumno-alumno_id',
-            '{{%stt_alumno}}',
-            'alumno_id',
-            '{{%alumno}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-stt_alumno-carrera_malla_id',
-            '{{%stt_alumno}}',
-            'carrera_malla_id',
-            '{{%carrera_malla}}',
-            'id',
-            'RESTRICT',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**
@@ -70,9 +43,6 @@ class m260217_010010_create_stt_alumno_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-stt_alumno-carrera_malla_id', '{{%stt_alumno}}');
-        $this->dropForeignKey('fk-stt_alumno-alumno_id', '{{%stt_alumno}}');
-        $this->dropForeignKey('fk-stt_alumno-stt_id', '{{%stt_alumno}}');
         $this->dropTable('{{%stt_alumno}}');
     }
 }

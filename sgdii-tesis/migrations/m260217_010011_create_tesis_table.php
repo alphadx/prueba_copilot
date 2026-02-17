@@ -43,66 +43,9 @@ class m260217_010011_create_tesis_table extends Migration
         $this->createIndex('idx-tesis-profesor_guia_id', '{{%tesis}}', 'profesor_guia_id');
         $this->createIndex('idx-tesis-estado', '{{%tesis}}', 'estado');
 
-        // Add foreign keys
-        $this->addForeignKey(
-            'fk-tesis-stt_id',
-            '{{%tesis}}',
-            'stt_id',
-            '{{%solicitud_tema_tesis}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tesis-categoria_id',
-            '{{%tesis}}',
-            'categoria_id',
-            '{{%categoria}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tesis-subcategoria_id',
-            '{{%tesis}}',
-            'subcategoria_id',
-            '{{%subcategoria}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tesis-profesor_guia_id',
-            '{{%tesis}}',
-            'profesor_guia_id',
-            '{{%profesor}}',
-            'id',
-            'RESTRICT',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tesis-profesor_revisor1_id',
-            '{{%tesis}}',
-            'profesor_revisor1_id',
-            '{{%profesor}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-tesis-profesor_revisor2_id',
-            '{{%tesis}}',
-            'profesor_revisor2_id',
-            '{{%profesor}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**
@@ -110,12 +53,6 @@ class m260217_010011_create_tesis_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-tesis-profesor_revisor2_id', '{{%tesis}}');
-        $this->dropForeignKey('fk-tesis-profesor_revisor1_id', '{{%tesis}}');
-        $this->dropForeignKey('fk-tesis-profesor_guia_id', '{{%tesis}}');
-        $this->dropForeignKey('fk-tesis-subcategoria_id', '{{%tesis}}');
-        $this->dropForeignKey('fk-tesis-categoria_id', '{{%tesis}}');
-        $this->dropForeignKey('fk-tesis-stt_id', '{{%tesis}}');
         $this->dropTable('{{%tesis}}');
     }
 }

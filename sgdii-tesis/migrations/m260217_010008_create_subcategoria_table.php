@@ -27,15 +27,9 @@ class m260217_010008_create_subcategoria_table extends Migration
             'categoria_id'
         );
 
-        $this->addForeignKey(
-            'fk-subcategoria-categoria_id',
-            '{{%subcategoria}}',
-            'categoria_id',
-            '{{%categoria}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**
@@ -43,7 +37,6 @@ class m260217_010008_create_subcategoria_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-subcategoria-categoria_id', '{{%subcategoria}}');
         $this->dropTable('{{%subcategoria}}');
     }
 }
