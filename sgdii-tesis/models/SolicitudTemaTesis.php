@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
  * This is the model class for table "solicitud_tema_tesis".
  *
  * @property int $id
+ * @property string $correlativo
  * @property int $origen_id
  * @property int $profesor_curso_id
  * @property float $nota
@@ -57,6 +58,8 @@ class SolicitudTemaTesis extends ActiveRecord
             [['origen_id', 'profesor_curso_id', 'modalidad_id', 'profesor_guia_propuesto_id', 'profesor_revisor1_propuesto_id', 'profesor_revisor2_propuesto_id', 'empresa_id'], 'integer'],
             [['nota'], 'number', 'min' => 1.0, 'max' => 7.0],
             [['fecha_creacion', 'created_at', 'updated_at'], 'safe'],
+            [['correlativo'], 'string', 'max' => 20],
+            [['correlativo'], 'unique'],
             [['titulo'], 'string', 'max' => 500],
             [['documento_path'], 'string', 'max' => 500],
             [['estado'], 'string', 'max' => 50],
@@ -77,6 +80,7 @@ class SolicitudTemaTesis extends ActiveRecord
     {
         return [
             'id' => 'ID',
+            'correlativo' => 'Correlativo',
             'origen_id' => 'Origen',
             'profesor_curso_id' => 'Profesor de Curso',
             'nota' => 'Nota',

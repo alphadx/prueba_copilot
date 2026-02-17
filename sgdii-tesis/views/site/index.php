@@ -31,8 +31,12 @@ $user = Yii::$app->user->identity;
                     <h5 class="card-title">
                         <i class="bi bi-file-earmark-text"></i> Solicitud de Inscripción de Tema de Tesis (STT)
                     </h5>
-                    <p class="card-text">Formulario para que los alumnos soliciten la inscripción de su tema de tesis.</p>
-                    <button class="btn btn-secondary" disabled>Próximamente</button>
+                    <p class="card-text">Formulario para que los profesores creen solicitudes de inscripción de tema de tesis.</p>
+                    <?php if (Yii::$app->user->identity->rol === 'profesor' || Yii::$app->user->identity->rol === 'admin'): ?>
+                        <?= Html::a('Crear Solicitud', ['/stt/create'], ['class' => 'btn btn-primary']) ?>
+                    <?php else: ?>
+                        <button class="btn btn-secondary" disabled>Solo Profesores</button>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
