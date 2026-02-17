@@ -1,0 +1,22 @@
+{
+    "name": "usach/sgdii-tesis",
+    "description": "Sistema de Gestión del Departamento de Ingeniería Industrial - Módulo de Tesis",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "yiisoft/yii2": "~2.0.45",
+        "yiisoft/yii2-bootstrap5": "~2.0.2",
+        "yidas/yii2-bower-asset": "~2.0.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "app\\": ""
+        }
+    },
+    "config": {
+        "process-timeout": 1800,
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true
+        }
+    }
+}
