@@ -33,8 +33,9 @@ class m260217_010010_create_stt_alumno_table extends Migration
             true
         );
 
-        // Note: SQLite does not support adding foreign keys after table creation
-        // Foreign keys should be defined in the table schema if needed
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**

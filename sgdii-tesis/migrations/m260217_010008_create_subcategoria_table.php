@@ -27,8 +27,9 @@ class m260217_010008_create_subcategoria_table extends Migration
             'categoria_id'
         );
 
-        // Note: SQLite does not support adding foreign keys after table creation
-        // Foreign keys should be defined in the table schema if needed
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**

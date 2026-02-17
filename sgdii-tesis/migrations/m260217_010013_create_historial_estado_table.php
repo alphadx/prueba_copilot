@@ -32,8 +32,9 @@ class m260217_010013_create_historial_estado_table extends Migration
         $this->createIndex('idx-historial_estado-usuario_id', '{{%historial_estado}}', 'usuario_id');
         $this->createIndex('idx-historial_estado-fecha', '{{%historial_estado}}', 'fecha');
 
-        // Note: SQLite does not support adding foreign keys after table creation
-        // Foreign keys should be defined in the table schema if needed
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**

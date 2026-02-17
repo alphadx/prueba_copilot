@@ -43,8 +43,9 @@ class m260217_010011_create_tesis_table extends Migration
         $this->createIndex('idx-tesis-profesor_guia_id', '{{%tesis}}', 'profesor_guia_id');
         $this->createIndex('idx-tesis-estado', '{{%tesis}}', 'estado');
 
-        // Note: SQLite does not support adding foreign keys after table creation
-        // Foreign keys should be defined in the table schema if needed
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**

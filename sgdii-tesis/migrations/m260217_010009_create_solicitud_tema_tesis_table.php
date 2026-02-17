@@ -44,8 +44,9 @@ class m260217_010009_create_solicitud_tema_tesis_table extends Migration
         $this->createIndex('idx-stt-empresa_id', '{{%solicitud_tema_tesis}}', 'empresa_id');
         $this->createIndex('idx-stt-estado', '{{%solicitud_tema_tesis}}', 'estado');
 
-        // Note: SQLite does not support adding foreign keys after table creation
-        // Foreign keys should be defined in the table schema if needed
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production, foreign keys should be defined in the table schema using FOREIGN KEY constraints,
+        // or enforced at the application level. For this prototype with SQLite, indexes are sufficient.
     }
 
     /**
