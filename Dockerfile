@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libicu-dev \
     libxml2-dev \
+    libsqlite3-dev \
     git \
     unzip \
     sqlite3 \
@@ -21,10 +22,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     mbstring \
     intl \
     gd \
-    zip \
-    tokenizer \
-    ctype \
-    xml
+    zip
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
