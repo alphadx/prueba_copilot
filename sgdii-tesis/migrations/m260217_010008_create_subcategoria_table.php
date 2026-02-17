@@ -1,0 +1,49 @@
+<?php
+
+use yii\db\Migration;
+
+/**
+ * Handles the creation of table `{{%subcategoria}}`.
+ */
+class m260217_010008_create_subcategoria_table extends Migration
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function safeUp()
+    {
+        $this->createTable('{{%subcategoria}}', [
+            'id' => $this->primaryKey(),
+            'categoria_id' => $this->integer()->notNull(),
+            'nombre' => $this->string(255)->notNull(),
+            'descripcion' => $this->text()->null(),
+            'activo' => $this->integer()->defaultValue(1),
+            'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
+        ]);
+
+        $this->createIndex(
+            'idx-subcategoria-categoria_id',
+            '{{%subcategoria}}',
+            'categoria_id'
+        );
+
+        $this->addForeignKey(
+            'fk-subcategoria-categoria_id',
+            '{{%subcategoria}}',
+            'categoria_id',
+            '{{%categoria}}',
+            'id',
+            'CASCADE',
+            'CASCADE'
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function safeDown()
+    {
+        $this->dropForeignKey('fk-subcategoria-categoria_id', '{{%subcategoria}}');
+        $this->dropTable('{{%subcategoria}}');
+    }
+}
