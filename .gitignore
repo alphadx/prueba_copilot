@@ -7,6 +7,21 @@ sgdii-tesis/web/assets/
 data/
 uploads/
 
+# Environment files
+.env
+sgdii-tesis/.env
+
+# Keep examples
+!.env.example
+!sgdii-tesis/.env.example
+
+# SQLite database
+*.db
+
+# Uploads
+sgdii-tesis/runtime/uploads/*
+!sgdii-tesis/runtime/uploads/.gitkeep
+
 # Ignore IDE files
 .idea/
 .vscode/

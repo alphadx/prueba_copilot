@@ -1,12 +1,14 @@
 <?php
 
+require __DIR__ . '/env.php';
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'sgdii-tesis',
-    'name' => 'SGDII - Módulo Tesis',
-    'language' => 'es',
+    'name' => env('APP_NAME', 'SGDII - Módulo Tesis'),
+    'language' => env('APP_LANGUAGE', 'es'),
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -15,7 +17,7 @@ $config = [
     ],
     'components' => [
         'request' => [
-            'cookieValidationKey' => 'sgdii-tesis-secret-key-change-in-production',
+            'cookieValidationKey' => env('COOKIE_VALIDATION_KEY', 'sgdii-tesis-secret-key-change-in-production'),
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
