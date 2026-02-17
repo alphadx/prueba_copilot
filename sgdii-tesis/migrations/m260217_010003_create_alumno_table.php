@@ -45,26 +45,8 @@ class m260217_010003_create_alumno_table extends Migration
             'user_id'
         );
 
-        // Add foreign keys
-        $this->addForeignKey(
-            'fk-alumno-carrera_malla_id',
-            '{{%alumno}}',
-            'carrera_malla_id',
-            '{{%carrera_malla}}',
-            'id',
-            'RESTRICT',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-alumno-user_id',
-            '{{%alumno}}',
-            'user_id',
-            '{{%user}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation
+        // Foreign keys should be defined in the table schema if needed
     }
 
     /**
@@ -72,8 +54,6 @@ class m260217_010003_create_alumno_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-alumno-user_id', '{{%alumno}}');
-        $this->dropForeignKey('fk-alumno-carrera_malla_id', '{{%alumno}}');
         $this->dropTable('{{%alumno}}');
     }
 }

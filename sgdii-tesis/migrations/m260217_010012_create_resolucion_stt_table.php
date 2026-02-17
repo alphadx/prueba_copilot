@@ -27,26 +27,8 @@ class m260217_010012_create_resolucion_stt_table extends Migration
         $this->createIndex('idx-resolucion_stt-usuario_id', '{{%resolucion_stt}}', 'usuario_id');
         $this->createIndex('idx-resolucion_stt-tipo', '{{%resolucion_stt}}', 'tipo');
 
-        // Add foreign keys
-        $this->addForeignKey(
-            'fk-resolucion_stt-stt_id',
-            '{{%resolucion_stt}}',
-            'stt_id',
-            '{{%solicitud_tema_tesis}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-
-        $this->addForeignKey(
-            'fk-resolucion_stt-usuario_id',
-            '{{%resolucion_stt}}',
-            'usuario_id',
-            '{{%user}}',
-            'id',
-            'RESTRICT',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation
+        // Foreign keys should be defined in the table schema if needed
     }
 
     /**
@@ -54,8 +36,6 @@ class m260217_010012_create_resolucion_stt_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-resolucion_stt-usuario_id', '{{%resolucion_stt}}');
-        $this->dropForeignKey('fk-resolucion_stt-stt_id', '{{%resolucion_stt}}');
         $this->dropTable('{{%resolucion_stt}}');
     }
 }

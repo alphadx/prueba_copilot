@@ -38,16 +38,8 @@ class m260217_010002_create_profesor_table extends Migration
             'user_id'
         );
 
-        // Add foreign key to user table
-        $this->addForeignKey(
-            'fk-profesor-user_id',
-            '{{%profesor}}',
-            'user_id',
-            '{{%user}}',
-            'id',
-            'SET NULL',
-            'CASCADE'
-        );
+        // Note: SQLite does not support adding foreign keys after table creation
+        // Foreign keys should be defined in the table schema if needed
     }
 
     /**
@@ -55,7 +47,6 @@ class m260217_010002_create_profesor_table extends Migration
      */
     public function safeDown()
     {
-        $this->dropForeignKey('fk-profesor-user_id', '{{%profesor}}');
         $this->dropTable('{{%profesor}}');
     }
 }
