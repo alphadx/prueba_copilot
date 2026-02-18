@@ -72,15 +72,6 @@ class ComisionController extends Controller
         $query = SolicitudTemaTesis::find()
             ->joinWith(['modalidad', 'profesorGuiaPropuesto', 'alumnos']);
         
-        // For comision members (non-admin), show only pending STTs by default
-        if ($user->rol !== 'admin') {
-            $estadoFilter = $request->get('estado');
-            if (!$estadoFilter) {
-                // Default to pending states for commission members
-                $query->andWhere(['estado' => SolicitudTemaTesis::getEstadosPendientes()]);
-            }
-        }
-        
         // Apply filters
         $modalidadId = $request->get('modalidad_id');
         if ($modalidadId) {
@@ -89,7 +80,11 @@ class ComisionController extends Controller
         
         $estado = $request->get('estado');
         if ($estado) {
+            // Apply user's estado filter
             $query->andWhere(['estado' => $estado]);
+        } elseif ($user->rol !== 'admin') {
+            // For non-admin commission members, default to pending states when no filter is set
+            $query->andWhere(['estado' => SolicitudTemaTesis::getEstadosPendientes()]);
         }
         
         $fechaDesde = $request->get('fecha_desde');
