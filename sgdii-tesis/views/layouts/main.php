@@ -16,7 +16,7 @@ $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, 
 if (!Yii::$app->user->isGuest) {
     Yii::$app->response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
     Yii::$app->response->headers->set('Pragma', 'no-cache');
-    Yii::$app->response->headers->set('Expires', '0');
+    Yii::$app->response->headers->set('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
 }
 
 // PWA Meta Tags
