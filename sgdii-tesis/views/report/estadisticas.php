@@ -263,7 +263,7 @@ if (categoriasData && categoriasData.labels && categoriasData.labels.length > 0)
 } else {
     // Show "no data available" message
     const container = document.getElementById('categoriasChart').parentElement;
-    container.innerHTML = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico. Las categorías se mostrarán una vez que existan tesis clasificadas.</div>';
+    container.innerHTML = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico. Asegúrese de que existen categorías activas configuradas en el sistema.</div>';
 }
 
 // Chart 3: Line Chart - Monthly Evolution

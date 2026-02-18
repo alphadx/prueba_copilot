@@ -390,7 +390,8 @@ $this->registerJs(<<<JS
                         subcategoriaSelect.prop('disabled', true);
                     }
                 },
-                error: function() {
+                error: function(xhr, status, error) {
+                    console.error('Error loading subcategories:', error, xhr.status);
                     alert('Error al cargar las subcategorías. Por favor, intente nuevamente.');
                 }
             });
