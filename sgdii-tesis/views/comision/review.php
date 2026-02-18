@@ -391,7 +391,7 @@ $this->registerJs(<<<JS
                     }
                 },
                 error: function(xhr, status, error) {
-                    console.error('Error loading subcategories:', error, xhr.status);
+                    console.error('Error loading subcategories:', error, 'Status:', xhr.status);
                     alert('Error al cargar las subcategorías. Por favor, intente nuevamente.');
                 }
             });
@@ -422,7 +422,7 @@ $this->registerJs(<<<JS
                 $('#profesorCargaContent').html(data);
             },
             error: function(xhr, status, error) {
-                console.error('Error loading professor workload:', error);
+                console.error('Error loading professor workload:', error, 'Status:', xhr.status);
                 var errorMsg = 'Error al cargar la información del profesor.';
                 if (xhr.status === 404) {
                     errorMsg = 'Profesor no encontrado.';
