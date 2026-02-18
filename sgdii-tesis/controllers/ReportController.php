@@ -799,7 +799,26 @@ class ReportController extends Controller
      */
     private function getTiemposResolucion()
     {
-        $profesores = Profesor::find()->where(['activo' => 1])->limit(10)->all();
+        // Only get professors who have resolved at least one STT
+        $profesores = Profesor::find()
+            ->where(['activo' => 1])
+            ->andWhere(['or',
+                ['exists', 
+                    SolicitudTemaTesis::find()
+                        ->where(['profesor_guia_propuesto_id' => new \yii\db\Expression('profesor.id')])
+                        ->andWhere(['not', ['fecha_resolucion' => null]])
+                ],
+                ['exists',
+                    SolicitudTemaTesis::find()
+                        ->where(['or',
+                            ['profesor_revisor1_propuesto_id' => new \yii\db\Expression('profesor.id')],
+                            ['profesor_revisor2_propuesto_id' => new \yii\db\Expression('profesor.id')]
+                        ])
+                        ->andWhere(['not', ['fecha_resolucion' => null]])
+                ]
+            ])
+            ->limit(10)
+            ->all();
         
         $data = [
             'labels' => [],

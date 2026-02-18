@@ -8,10 +8,54 @@ use yii\helpers\Html;
 $this->title = 'STT ' . $model->correlativo;
 $this->params['breadcrumbs'][] = ['label' => 'Solicitudes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// Check permissions once at the top
+$user = Yii::$app->user->identity;
+$canUpdate = false;
+
+if (in_array($model->estado, ['Enviada', 'En revisión'])) {
+    if ($user->rol === 'admin') {
+        $canUpdate = true;
+    } elseif ($user->rol === 'alumno') {
+        $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
+        if ($alumno) {
+            foreach ($model->sttAlumnos as $sttAlumno) {
+                if ($sttAlumno->alumno_id == $alumno->id) {
+                    $canUpdate = true;
+                    break;
+                }
+            }
+        }
+    } elseif ($user->rol === 'profesor') {
+        $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+        if ($profesor && $model->profesor_curso_id == $profesor->id) {
+            $canUpdate = true;
+        }
+    }
+}
+
+$canReview = ($user->rol === 'admin' || $user->rol === 'comision_evaluadora') && $model->puedeSerResuelta();
 ?>
 
 <div class="stt-view">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <div>
+            <?php if ($canUpdate): ?>
+                <?= Html::a('<i class="bi bi-pencil"></i> Corregir STT', ['update', 'id' => $model->id], [
+                    'class' => 'btn btn-warning'
+                ]) ?>
+            <?php endif; ?>
+            
+            <?php if ($canReview): ?>
+                <?= Html::a('<i class="bi bi-check-circle"></i> Revisar STT', ['/comision/review', 'id' => $model->id], [
+                    'class' => 'btn btn-success'
+                ]) ?>
+            <?php endif; ?>
+            
+            <?= Html::a('<i class="bi bi-arrow-left"></i> Volver', ['index'], ['class' => 'btn btn-secondary']) ?>
+        </div>
+    </div>
 
     <div class="card mb-3">
         <div class="card-header">
@@ -109,7 +153,19 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     <?php endif; ?>
 
-    <div class="form-group">
-        <?= Html::a('Volver', ['site/index'], ['class' => 'btn btn-secondary']) ?>
+    <div class="form-group mt-3">
+        <?php if ($canUpdate): ?>
+            <?= Html::a('<i class="bi bi-pencil"></i> Corregir STT', ['update', 'id' => $model->id], [
+                'class' => 'btn btn-warning'
+            ]) ?>
+        <?php endif; ?>
+        
+        <?php if ($canReview): ?>
+            <?= Html::a('<i class="bi bi-check-circle"></i> Revisar STT', ['/comision/review', 'id' => $model->id], [
+                'class' => 'btn btn-success'
+            ]) ?>
+        <?php endif; ?>
+        
+        <?= Html::a('<i class="bi bi-arrow-left"></i> Volver', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 </div>

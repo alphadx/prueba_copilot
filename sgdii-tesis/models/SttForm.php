@@ -58,8 +58,16 @@ class SttForm extends Model
             // Integer fields
             [['origen_id', 'profesor_curso_id', 'modalidad_id', 'alumno_1_id', 'carrera_1_id', 'alumno_2_id', 'carrera_2_id', 'profesor_guia_propuesto_id', 'profesor_revisor1_propuesto_id', 'profesor_revisor2_propuesto_id', 'empresa_id'], 'integer'],
             
-            // Nota validation
-            [['nota'], 'number', 'min' => 1.0, 'max' => 7.0],
+            // Nota validation with automatic transformation
+            [['nota'], 'number', 'min' => 1.0, 'max' => 70.0],
+            [['nota'], 'filter', 'filter' => function($value) {
+                // Transform grade from 10-70 range to 1.0-7.0 range
+                if ($value >= 10 && $value <= 70) {
+                    return $value / 10;
+                }
+                return $value;
+            }],
+            [['nota'], 'number', 'min' => 1.0, 'max' => 7.0, 'message' => 'La nota debe estar entre 1.0 y 7.0'],
             
             // String fields
             [['titulo'], 'string', 'max' => 500],

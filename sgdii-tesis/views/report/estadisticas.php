@@ -159,44 +159,49 @@ $tiemposData = json_encode($chartsData['tiemposResolucion']);
 $this->registerJs(<<<JS
 // Chart 1: Bar Chart - Modalities Distribution
 const modalidadesData = $modalidadesData;
-const modalidadesCtx = document.getElementById('modalidadesChart').getContext('2d');
-new Chart(modalidadesCtx, {
-    type: 'bar',
-    data: {
-        labels: modalidadesData.labels,
-        datasets: [{
-            label: 'Cantidad de Solicitudes',
-            data: modalidadesData.values,
-            backgroundColor: [
-                'rgba(54, 162, 235, 0.7)',
-                'rgba(255, 99, 132, 0.7)',
-                'rgba(255, 206, 86, 0.7)',
-                'rgba(75, 192, 192, 0.7)',
-            ],
-            borderColor: [
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 99, 132, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-            ],
-            borderWidth: 1
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: { display: false },
-            title: { display: false }
+if (modalidadesData && modalidadesData.labels && modalidadesData.labels.length > 0) {
+    const modalidadesCtx = document.getElementById('modalidadesChart').getContext('2d');
+    new Chart(modalidadesCtx, {
+        type: 'bar',
+        data: {
+            labels: modalidadesData.labels,
+            datasets: [{
+                label: 'Cantidad de Solicitudes',
+                data: modalidadesData.values,
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.7)',
+                    'rgba(255, 99, 132, 0.7)',
+                    'rgba(255, 206, 86, 0.7)',
+                    'rgba(75, 192, 192, 0.7)',
+                ],
+                borderColor: [
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                ],
+                borderWidth: 1
+            }]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 1 }
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: false },
+                title: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
-    }
-});
+    });
+} else {
+    const container = document.getElementById('modalidadesChart').parentElement;
+    container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico.</div>';
+}
 
 // Chart 2: Pie Chart - Categories
 const categoriasData = $categoriasData;
@@ -230,73 +235,83 @@ if (categoriasData.labels.length > 0) {
 
 // Chart 3: Line Chart - Monthly Evolution
 const evolucionData = $evolucionData;
-const evolucionCtx = document.getElementById('evolucionChart').getContext('2d');
-new Chart(evolucionCtx, {
-    type: 'line',
-    data: {
-        labels: evolucionData.labels,
-        datasets: [{
-            label: 'Solicitudes por Mes',
-            data: evolucionData.values,
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            tension: 0.4,
-            fill: true
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: { display: true }
+if (evolucionData && evolucionData.labels && evolucionData.labels.length > 0) {
+    const evolucionCtx = document.getElementById('evolucionChart').getContext('2d');
+    new Chart(evolucionCtx, {
+        type: 'line',
+        data: {
+            labels: evolucionData.labels,
+            datasets: [{
+                label: 'Solicitudes por Mes',
+                data: evolucionData.values,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                tension: 0.4,
+                fill: true
+            }]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: { stepSize: 1 }
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
-    }
-});
+    });
+} else {
+    const container = document.getElementById('evolucionChart').parentElement;
+    container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico.</div>';
+}
 
 // Chart 4: Stacked Bar Chart - Modality by State
 const modalidadEstadoData = $modalidadEstadoData;
-const colors = [
-    'rgba(54, 162, 235, 0.7)',
-    'rgba(255, 206, 86, 0.7)',
-    'rgba(75, 192, 192, 0.7)',
-    'rgba(153, 102, 255, 0.7)',
-    'rgba(255, 99, 132, 0.7)',
-];
-const datasets = modalidadEstadoData.datasets.map((dataset, index) => ({
-    label: dataset.label,
-    data: dataset.values,
-    backgroundColor: colors[index % colors.length]
-}));
+if (modalidadEstadoData && modalidadEstadoData.labels && modalidadEstadoData.labels.length > 0 && modalidadEstadoData.datasets && modalidadEstadoData.datasets.length > 0) {
+    const colors = [
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
+    ];
+    const datasets = modalidadEstadoData.datasets.map((dataset, index) => ({
+        label: dataset.label,
+        data: dataset.values,
+        backgroundColor: colors[index % colors.length]
+    }));
 
-const modalidadEstadoCtx = document.getElementById('modalidadEstadoChart').getContext('2d');
-new Chart(modalidadEstadoCtx, {
-    type: 'bar',
-    data: {
-        labels: modalidadEstadoData.labels,
-        datasets: datasets
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: { position: 'top' }
+    const modalidadEstadoCtx = document.getElementById('modalidadEstadoChart').getContext('2d');
+    new Chart(modalidadEstadoCtx, {
+        type: 'bar',
+        data: {
+            labels: modalidadEstadoData.labels,
+            datasets: datasets
         },
-        scales: {
-            x: { stacked: true },
-            y: { 
-                stacked: true,
-                beginAtZero: true,
-                ticks: { stepSize: 1 }
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                x: { stacked: true },
+                y: { 
+                    stacked: true,
+                    beginAtZero: true,
+                    ticks: { stepSize: 1 }
+                }
             }
         }
-    }
-});
+    });
+} else {
+    const container = document.getElementById('modalidadEstadoChart').parentElement;
+    container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico.</div>';
+}
 
 // Chart 5: Grouped Bar Chart - Resolution Times
 const tiemposData = $tiemposData;

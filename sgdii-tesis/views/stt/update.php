@@ -7,6 +7,7 @@ use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var app\models\SttForm $model */
+/** @var app\models\SolicitudTemaTesis $stt */
 /** @var yii\bootstrap5\ActiveForm $form */
 /** @var app\models\Origen[] $origenes */
 /** @var app\models\Modalidad[] $modalidades */
@@ -15,16 +16,18 @@ use yii\bootstrap5\ActiveForm;
 /** @var app\models\CarreraMalla[] $carreras */
 /** @var app\models\Empresa[] $empresas */
 
-$this->title = 'Crear Solicitud de Tema de Tesis';
+$this->title = 'Corregir Solicitud de Tema de Tesis';
 $this->params['breadcrumbs'][] = ['label' => 'Solicitudes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $stt->correlativo, 'url' => ['view', 'id' => $stt->id]];
+$this->params['breadcrumbs'][] = 'Corregir';
 
 // Register grade validation script
 $this->registerJsFile('/js/grade-validation.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
 
-<div class="stt-create">
+<div class="stt-update">
     <h1><?= Html::encode($this->title) ?></h1>
+    <p class="text-muted">Solicitud: <?= Html::encode($stt->correlativo) ?></p>
 
     <div class="stt-form">
         <?php $form = ActiveForm::begin(['id' => 'stt-form']); ?>
@@ -203,11 +206,11 @@ $this->registerJsFile('/js/grade-validation.js', ['depends' => [\yii\web\JqueryA
         </div>
 
         <div class="form-group mt-4">
-            <?= Html::submitButton('<i class="bi bi-check-circle me-2"></i>Crear Solicitud', [
+            <?= Html::submitButton('<i class="bi bi-save me-2"></i>Actualizar Solicitud', [
                 'class' => 'btn btn-primary btn-lg',
-                'data-loading-text' => 'Creando solicitud...'
+                'data-loading-text' => 'Actualizando solicitud...'
             ]) ?>
-            <?= Html::a('<i class="bi bi-x-circle me-2"></i>Cancelar', ['site/index'], [
+            <?= Html::a('<i class="bi bi-x-circle me-2"></i>Cancelar', ['view', 'id' => $stt->id], [
                 'class' => 'btn btn-secondary btn-lg'
             ]) ?>
         </div>
