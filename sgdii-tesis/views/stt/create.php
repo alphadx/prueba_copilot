@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -215,7 +216,7 @@ foreach ($modalidades as $modalidad) {
 }
 $this->registerJs(<<<JS
     // Get modalidad names from PHP
-    var modalidades = <?= json_encode($modalidadesData, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    var modalidades = <?= Json::htmlEncode($modalidadesData) ?>;
     
     // Function to update form based on modalidad
     function updateFormByModalidad() {
