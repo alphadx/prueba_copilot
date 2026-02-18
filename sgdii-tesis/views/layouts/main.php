@@ -20,6 +20,7 @@ $this->beginPage();
     <title><?= Html::encode($this->title) ?> - SGDII</title>
     <?php $this->head() ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/site.css">
 </head>
 <body>
@@ -39,7 +40,28 @@ $this->beginPage();
                     <?php
                     /** @var User $user */
                     $user = Yii::$app->user->identity;
+                    $unreadCount = \app\models\Notificacion::getUnreadCount($user->id);
                     ?>
+                    <li class="nav-item">
+                        <a href="<?= Yii::$app->urlManager->createUrl(['/notification/index']) ?>" 
+                           class="nav-link position-relative text-white" 
+                           title="Notificaciones">
+                            <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
+                            <?php if ($unreadCount > 0): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                      id="notification-badge" 
+                                      style="font-size: 0.7rem;">
+                                    <?= $unreadCount ?>
+                                </span>
+                            <?php else: ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                      id="notification-badge" 
+                                      style="font-size: 0.7rem; display: none;">
+                                    0
+                                </span>
+                            <?php endif; ?>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <span class="navbar-text text-white me-3">
                             <strong><?= Html::encode($user->nombre) ?></strong>

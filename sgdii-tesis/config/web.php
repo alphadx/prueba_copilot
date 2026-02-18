@@ -47,6 +47,24 @@ $config = [
             'enablePrettyUrl' => false,
             'showScriptName' => true,
         ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            // send all mails to a file by default for development
+            'useFileTransport' => env('MAIL_USE_FILE_TRANSPORT', true),
+            'fileTransportPath' => '@runtime/mail',
+            // Configure SMTP settings for production
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => env('MAIL_HOST', 'localhost'),
+                'username' => env('MAIL_USERNAME', ''),
+                'password' => env('MAIL_PASSWORD', ''),
+                'port' => env('MAIL_PORT', 587),
+                'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+            ],
+        ],
+        'notificationService' => [
+            'class' => 'app\components\NotificationService',
+        ],
     ],
     'params' => $params,
 ];

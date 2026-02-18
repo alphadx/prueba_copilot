@@ -63,6 +63,9 @@ class SttController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $stt = $model->save();
             if ($stt) {
+                // Send notifications to committee about new STT
+                Yii::$app->notificationService->notifyCommitteeAboutNewSTT($stt);
+                
                 Yii::$app->session->setFlash('success', 
                     "Solicitud de Tema de Tesis creada exitosamente. Correlativo: {$stt->correlativo}"
                 );
