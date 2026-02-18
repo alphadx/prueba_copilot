@@ -23,6 +23,9 @@ $this->registerMetaTag(['name' => 'msapplication-TileColor', 'content' => '#0d6e
 $this->registerLinkTag(['rel' => 'manifest', 'href' => '/manifest.json']);
 $this->registerLinkTag(['rel' => 'apple-touch-icon', 'href' => '/assets/icon-192.png']);
 
+// Register WebSocket client script
+$this->registerJsFile('/js/websocket-client.js', ['position' => \yii\web\View::POS_END]);
+
 $this->beginPage();
 ?>
 <!DOCTYPE html>
