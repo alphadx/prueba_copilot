@@ -201,8 +201,9 @@ class ComisionController extends Controller
                 
                 $transaction->commit();
                 
-                // Send notifications
-                $this->enviarNotificaciones($stt, $resolucion, $motivo);
+                // Send notifications using NotificationService
+                Yii::$app->notificationService->notifyStudentsAboutResolution($stt, $resolucion, $motivo);
+                Yii::$app->notificationService->notifyProfessorsAboutResolution($stt, $resolucion);
                 
                 Yii::$app->session->setFlash('success', $message);
                 return $this->redirect(['index']);
@@ -265,76 +266,6 @@ class ComisionController extends Controller
             'tesisComoRevisor1' => $tesisComoRevisor1,
             'tesisComoRevisor2' => $tesisComoRevisor2,
         ]);
-    }
-
-    /**
-     * Send notifications to students and professors
-     * @param SolicitudTemaTesis $stt
-     * @param string $resolucion
-     * @param string $motivo
-     */
-    private function enviarNotificaciones($stt, $resolucion, $motivo)
-    {
-        // Get recipients
-        $alumnos = $stt->alumnos;
-        $profesorGuia = $stt->profesorGuiaPropuesto;
-        $profesorRevisor1 = $stt->profesorRevisor1Propuesto;
-        $profesorRevisor2 = $stt->profesorRevisor2Propuesto;
-        
-        // Prepare message based on resolution type
-        $subject = '';
-        $body = '';
-        
-        switch ($resolucion) {
-            case 'aceptar':
-                $subject = "STT Aceptada - {$stt->correlativo}";
-                $body = "Su solicitud de tema de tesis '{$stt->titulo}' ha sido ACEPTADA por la Comisión de Titulación.";
-                if ($motivo) {
-                    $body .= "\n\nComentarios: {$motivo}";
-                }
-                break;
-                
-            case 'aceptar_con_observaciones':
-                $subject = "STT Aceptada con Observaciones - {$stt->correlativo}";
-                $body = "Su solicitud de tema de tesis '{$stt->titulo}' ha sido ACEPTADA CON OBSERVACIONES por la Comisión de Titulación.";
-                $body .= "\n\nObservaciones: {$motivo}";
-                break;
-                
-            case 'rechazar':
-                $subject = "STT Rechazada - {$stt->correlativo}";
-                $body = "Su solicitud de tema de tesis '{$stt->titulo}' ha sido RECHAZADA por la Comisión de Titulación.";
-                $body .= "\n\nMotivo: {$motivo}";
-                break;
-        }
-        
-        // Send to students
-        foreach ($alumnos as $alumno) {
-            if ($alumno->correo) {
-                Yii::$app->session->addFlash('info', 
-                    "Notificación enviada a alumno: {$alumno->nombre} ({$alumno->correo})"
-                );
-                // In production, use Yii::$app->mailer->compose()->send()
-            }
-        }
-        
-        // Send to professors
-        if ($profesorGuia && $profesorGuia->correo) {
-            Yii::$app->session->addFlash('info', 
-                "Notificación enviada a Profesor Guía: {$profesorGuia->nombre} ({$profesorGuia->correo})"
-            );
-        }
-        
-        if ($profesorRevisor1 && $profesorRevisor1->correo) {
-            Yii::$app->session->addFlash('info', 
-                "Notificación enviada a Revisor 1: {$profesorRevisor1->nombre} ({$profesorRevisor1->correo})"
-            );
-        }
-        
-        if ($profesorRevisor2 && $profesorRevisor2->correo) {
-            Yii::$app->session->addFlash('info', 
-                "Notificación enviada a Revisor 2: {$profesorRevisor2->nombre} ({$profesorRevisor2->correo})"
-            );
-        }
     }
 
     /**
