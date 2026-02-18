@@ -34,6 +34,13 @@ use yii\db\ActiveRecord;
  */
 class Tesis extends ActiveRecord
 {
+    // Workflow states
+    const ESTADO_DESARROLLO = 'Desarrollo';
+    const ESTADO_REVISION = 'En Revisión';
+    const ESTADO_EVALUACION = 'En Evaluación';
+    const ESTADO_FINALIZADA = 'Finalizada';
+    const ESTADO_SUSPENDIDA = 'Suspendida';
+    
     /**
      * {@inheritdoc}
      */
@@ -192,5 +199,87 @@ class Tesis extends ActiveRecord
     {
         // Can only advance if not at the last stage
         return $this->etapa_actual < $this->total_etapas;
+    }
+    
+    /**
+     * Get available workflow states
+     *
+     * @return array List of available states
+     */
+    public static function getEstados()
+    {
+        return [
+            self::ESTADO_DESARROLLO => 'Desarrollo',
+            self::ESTADO_REVISION => 'En Revisión',
+            self::ESTADO_EVALUACION => 'En Evaluación',
+            self::ESTADO_FINALIZADA => 'Finalizada',
+            self::ESTADO_SUSPENDIDA => 'Suspendida',
+        ];
+    }
+    
+    /**
+     * Get CSS class for estado badge
+     *
+     * @return string Bootstrap badge class
+     */
+    public function getEstadoBadgeClass()
+    {
+        $classes = [
+            self::ESTADO_DESARROLLO => 'bg-primary',
+            self::ESTADO_REVISION => 'bg-info',
+            self::ESTADO_EVALUACION => 'bg-warning',
+            self::ESTADO_FINALIZADA => 'bg-success',
+            self::ESTADO_SUSPENDIDA => 'bg-secondary',
+        ];
+        return $classes[$this->estado] ?? 'bg-secondary';
+    }
+    
+    /**
+     * Check if thesis is in a state that allows updates
+     *
+     * @return bool
+     */
+    public function puedeActualizar()
+    {
+        return in_array($this->estado, [
+            self::ESTADO_DESARROLLO,
+            self::ESTADO_REVISION,
+            self::ESTADO_EVALUACION
+        ]);
+    }
+    
+    /**
+     * Change workflow state and log to history
+     *
+     * @param string $nuevoEstado New state
+     * @param string $motivo Reason for change
+     * @param int $userId User making the change
+     * @return bool Success
+     */
+    public function cambiarEstado($nuevoEstado, $motivo = '', $userId = null)
+    {
+        if (!in_array($nuevoEstado, array_keys(self::getEstados()))) {
+            return false;
+        }
+        
+        $estadoAnterior = $this->estado;
+        $this->estado = $nuevoEstado;
+        $this->fecha_ultima_actualizacion = date('Y-m-d H:i:s');
+        
+        if ($this->save()) {
+            // Log to history
+            $historial = new HistorialEstado();
+            $historial->tesis_id = $this->id;
+            $historial->estado_anterior = $estadoAnterior;
+            $historial->estado_nuevo = $nuevoEstado;
+            $historial->motivo = $motivo;
+            $historial->usuario_id = $userId ?? Yii::$app->user->id;
+            $historial->fecha_cambio = date('Y-m-d H:i:s');
+            $historial->save();
+            
+            return true;
+        }
+        
+        return false;
     }
 }
