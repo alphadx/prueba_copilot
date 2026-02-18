@@ -22,6 +22,7 @@ use yii\db\ActiveRecord;
  * @property string $documento_path
  * @property string $estado
  * @property string $motivo_resolucion
+ * @property string $observaciones
  * @property string $fecha_resolucion
  * @property string $fecha_creacion
  * @property string $created_at
@@ -59,7 +60,7 @@ class SolicitudTemaTesis extends ActiveRecord
             [['origen_id', 'profesor_curso_id', 'nota', 'modalidad_id', 'titulo'], 'required'],
             [['origen_id', 'profesor_curso_id', 'modalidad_id', 'profesor_guia_propuesto_id', 'profesor_revisor1_propuesto_id', 'profesor_revisor2_propuesto_id', 'empresa_id'], 'integer'],
             [['nota'], 'number', 'min' => 1.0, 'max' => 7.0],
-            [['motivo_resolucion'], 'string'],
+            [['motivo_resolucion', 'observaciones'], 'string'],
             [['fecha_creacion', 'fecha_resolucion', 'created_at', 'updated_at'], 'safe'],
             [['correlativo'], 'string', 'max' => 20],
             [['correlativo'], 'unique'],
@@ -96,6 +97,7 @@ class SolicitudTemaTesis extends ActiveRecord
             'documento_path' => 'Documento',
             'estado' => 'Estado',
             'motivo_resolucion' => 'Motivo de Resolución',
+            'observaciones' => 'Observaciones',
             'fecha_resolucion' => 'Fecha de Resolución',
             'fecha_creacion' => 'Fecha de Creación',
             'created_at' => 'Creado',
@@ -303,18 +305,18 @@ class SolicitudTemaTesis extends ActiveRecord
     /**
      * Resolve STT as accepted with observations
      * @param int $userId User who performed the action
-     * @param string $motivo Observations
+     * @param string $observaciones Observations
      * @return bool
      */
-    public function aceptarConObservaciones($userId, $motivo)
+    public function aceptarConObservaciones($userId, $observaciones)
     {
         $oldState = $this->estado;
         $this->estado = self::ESTADO_ACEPTADA_CON_OBSERVACIONES;
         $this->fecha_resolucion = date('Y-m-d H:i:s');
-        $this->motivo_resolucion = $motivo;
+        $this->observaciones = $observaciones;
         
         if ($this->save(false)) {
-            $this->registrarHistorial($oldState, $this->estado, $userId, $motivo);
+            $this->registrarHistorial($oldState, $this->estado, $userId, $observaciones);
             return true;
         }
         return false;

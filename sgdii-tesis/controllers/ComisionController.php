@@ -157,6 +157,7 @@ class ComisionController extends Controller
         $request = Yii::$app->request;
         $resolucion = $request->post('resolucion');
         $motivo = $request->post('motivo');
+        $observaciones = $request->post('observaciones');
         $userId = Yii::$app->user->id;
         
         $transaction = Yii::$app->db->beginTransaction();
@@ -170,10 +171,10 @@ class ComisionController extends Controller
                     break;
                     
                 case 'aceptar_con_observaciones':
-                    if (empty($motivo)) {
+                    if (empty($observaciones)) {
                         throw new \Exception('Debe proporcionar las observaciones.');
                     }
-                    $success = $stt->aceptarConObservaciones($userId, $motivo);
+                    $success = $stt->aceptarConObservaciones($userId, $observaciones);
                     $message = 'Solicitud aceptada con observaciones.';
                     break;
                     
@@ -194,7 +195,7 @@ class ComisionController extends Controller
                 $resolucionRecord = new \app\models\ResolucionStt();
                 $resolucionRecord->stt_id = $stt->id;
                 $resolucionRecord->tipo = $resolucion;
-                $resolucionRecord->motivo = $motivo;
+                $resolucionRecord->motivo = $resolucion === 'aceptar_con_observaciones' ? $observaciones : $motivo;
                 $resolucionRecord->usuario_id = $userId;
                 $resolucionRecord->fecha_resolucion = date('Y-m-d H:i:s');
                 $resolucionRecord->save(false);
@@ -202,7 +203,7 @@ class ComisionController extends Controller
                 $transaction->commit();
                 
                 // Send notifications using NotificationService
-                Yii::$app->notificationService->notifyStudentsAboutResolution($stt, $resolucion, $motivo);
+                Yii::$app->notificationService->notifyStudentsAboutResolution($stt, $resolucion, $resolucion === 'aceptar_con_observaciones' ? $observaciones : $motivo);
                 Yii::$app->notificationService->notifyProfessorsAboutResolution($stt, $resolucion);
                 
                 Yii::$app->session->setFlash('success', $message);

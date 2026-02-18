@@ -187,16 +187,29 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]) ?>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="motivo" class="form-label">Motivo / Observaciones</label>
+                        <div class="mb-3" id="motivo-container">
+                            <label for="motivo" class="form-label">Motivo de Rechazo</label>
                             <?= Html::textarea('motivo', '', [
                                 'class' => 'form-control',
                                 'id' => 'motivo',
                                 'rows' => 5,
-                                'placeholder' => 'Ingrese el motivo de rechazo o las observaciones...',
+                                'placeholder' => 'Ingrese el motivo de rechazo...',
                             ]) ?>
                             <small class="text-muted">
-                                Requerido para rechazo y aceptación con observaciones.
+                                Requerido cuando se rechaza la solicitud.
+                            </small>
+                        </div>
+
+                        <div class="mb-3" id="observaciones-container" style="display: none;">
+                            <label for="observaciones" class="form-label">Observaciones <span class="text-danger">*</span></label>
+                            <?= Html::textarea('observaciones', '', [
+                                'class' => 'form-control',
+                                'id' => 'observaciones',
+                                'rows' => 5,
+                                'placeholder' => 'Ingrese las observaciones para la aceptación...',
+                            ]) ?>
+                            <small class="text-muted">
+                                Requerido cuando se acepta con observaciones.
                             </small>
                         </div>
 
@@ -233,8 +246,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?php endif; ?>
                         
                         <?php if ($model->motivo_resolucion): ?>
-                            <p><strong>Motivo / Observaciones:</strong><br>
+                            <p><strong>Motivo de Rechazo:</strong><br>
                             <?= Html::encode($model->motivo_resolucion) ?></p>
+                        <?php endif; ?>
+                        
+                        <?php if ($model->observaciones): ?>
+                            <p><strong>Observaciones:</strong><br>
+                            <?= Html::encode($model->observaciones) ?></p>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -244,19 +262,47 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
-// JavaScript for form validation
+// JavaScript for form validation and dynamic field display
 $this->registerJs(<<<JS
+    // Show/hide fields based on resolution type
+    $('input[name="resolucion"]').on('change', function() {
+        var resolucion = $(this).val();
+        
+        if (resolucion === 'rechazar') {
+            $('#motivo-container').show();
+            $('#observaciones-container').hide();
+            $('#motivo').attr('required', true);
+            $('#observaciones').attr('required', false);
+        } else if (resolucion === 'aceptar_con_observaciones') {
+            $('#motivo-container').hide();
+            $('#observaciones-container').show();
+            $('#motivo').attr('required', false);
+            $('#observaciones').attr('required', true);
+        } else {
+            $('#motivo-container').hide();
+            $('#observaciones-container').hide();
+            $('#motivo').attr('required', false);
+            $('#observaciones').attr('required', false);
+        }
+    });
+    
     $('#resolucion-form').on('beforeSubmit', function(e) {
         var resolucion = $('input[name="resolucion"]:checked').val();
         var motivo = $('#motivo').val().trim();
+        var observaciones = $('#observaciones').val().trim();
         
         if (!resolucion) {
             alert('Por favor, seleccione un tipo de resolución.');
             return false;
         }
         
-        if ((resolucion === 'rechazar' || resolucion === 'aceptar_con_observaciones') && !motivo) {
-            alert('Debe proporcionar un motivo/observaciones para esta resolución.');
+        if (resolucion === 'rechazar' && !motivo) {
+            alert('Debe proporcionar el motivo de rechazo.');
+            return false;
+        }
+        
+        if (resolucion === 'aceptar_con_observaciones' && !observaciones) {
+            alert('Debe proporcionar las observaciones para la aceptación.');
             return false;
         }
         
