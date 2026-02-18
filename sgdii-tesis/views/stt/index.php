@@ -8,6 +8,20 @@ use yii\helpers\Url;
 
 $this->title = 'Solicitudes de Tema de Tesis';
 $this->params['breadcrumbs'][] = $this->title;
+
+// Perform permission checks once before the loop
+$user = Yii::$app->user->identity;
+$alumno = null;
+$profesor = null;
+
+if ($user->rol === 'alumno') {
+    $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
+} elseif ($user->rol === 'profesor') {
+    $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+}
+
+$isAdmin = $user->rol === 'admin';
+$isComision = $user->rol === 'comision_evaluadora' || $user->rol === 'admin';
 ?>
 
 <div class="stt-index">
@@ -84,24 +98,19 @@ $this->params['breadcrumbs'][] = $this->title;
                                 
                                 <?php if (in_array($stt->estado, ['Enviada', 'En revisión'])): ?>
                                     <?php 
-                                    $user = Yii::$app->user->identity;
                                     $canUpdate = false;
                                     
-                                    if ($user->rol === 'admin') {
+                                    if ($isAdmin) {
                                         $canUpdate = true;
-                                    } elseif ($user->rol === 'alumno') {
-                                        $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
+                                    } elseif ($alumno) {
                                         foreach ($stt->sttAlumnos as $sttAlumno) {
                                             if ($sttAlumno->alumno_id == $alumno->id) {
                                                 $canUpdate = true;
                                                 break;
                                             }
                                         }
-                                    } elseif ($user->rol === 'profesor') {
-                                        $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
-                                        if ($stt->profesor_curso_id == $profesor->id) {
-                                            $canUpdate = true;
-                                        }
+                                    } elseif ($profesor && $stt->profesor_curso_id == $profesor->id) {
+                                        $canUpdate = true;
                                     }
                                     ?>
                                     
@@ -113,13 +122,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     <?php endif; ?>
                                 <?php endif; ?>
                                 
-                                <?php if (Yii::$app->user->identity->rol === 'admin' || Yii::$app->user->identity->rol === 'comision_evaluadora'): ?>
-                                    <?php if ($stt->puedeSerResuelta()): ?>
-                                        <?= Html::a('<i class="bi bi-check-circle"></i>', ['/comision/review', 'id' => $stt->id], [
-                                            'class' => 'btn btn-sm btn-outline-success',
-                                            'title' => 'Revisar STT',
-                                        ]) ?>
-                                    <?php endif; ?>
+                                <?php if ($isComision && $stt->puedeSerResuelta()): ?>
+                                    <?= Html::a('<i class="bi bi-check-circle"></i>', ['/comision/review', 'id' => $stt->id], [
+                                        'class' => 'btn btn-sm btn-outline-success',
+                                        'title' => 'Revisar STT',
+                                    ]) ?>
                                 <?php endif; ?>
                             </td>
                         </tr>

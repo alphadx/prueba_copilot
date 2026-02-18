@@ -20,6 +20,9 @@ $this->title = 'Corregir Solicitud de Tema de Tesis';
 $this->params['breadcrumbs'][] = ['label' => 'Solicitudes', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $stt->correlativo, 'url' => ['view', 'id' => $stt->id]];
 $this->params['breadcrumbs'][] = 'Corregir';
+
+// Register grade validation script
+$this->registerJsFile('/js/grade-validation.js', ['depends' => [\yii\web\JqueryAsset::class]]);
 ?>
 
 <div class="stt-update">
@@ -203,11 +206,11 @@ $this->params['breadcrumbs'][] = 'Corregir';
         </div>
 
         <div class="form-group mt-4">
-            <?= Html::submitButton('<i class="bi bi-check-circle me-2"></i>Crear Solicitud', [
+            <?= Html::submitButton('<i class="bi bi-save me-2"></i>Actualizar Solicitud', [
                 'class' => 'btn btn-primary btn-lg',
-                'data-loading-text' => 'Creando solicitud...'
+                'data-loading-text' => 'Actualizando solicitud...'
             ]) ?>
-            <?= Html::a('<i class="bi bi-x-circle me-2"></i>Cancelar', ['site/index'], [
+            <?= Html::a('<i class="bi bi-x-circle me-2"></i>Cancelar', ['view', 'id' => $stt->id], [
                 'class' => 'btn btn-secondary btn-lg'
             ]) ?>
         </div>
@@ -292,55 +295,6 @@ $this->registerJs(<<<JS
     
     // Initialize on page load
     updateFormByModalidad();
-    
-    // Grade validation and transformation
-    $('#nota-input').on('blur', function() {
-        var value = $(this).val().trim();
-        
-        // If empty, skip
-        if (!value) return;
-        
-        // Remove any non-numeric characters except decimal point
-        value = value.replace(/[^\d.]/g, '');
-        
-        // Convert to number
-        var numValue = parseFloat(value);
-        
-        // Check if it's in the range 10-70 (needs conversion)
-        if (numValue >= 10 && numValue <= 70) {
-            // Convert to decimal format (e.g., 50 -> 5.0, 35 -> 3.5)
-            numValue = numValue / 10;
-            $(this).val(numValue.toFixed(1));
-            
-            // Show feedback
-            var feedbackDiv = $(this).parent().find('.grade-feedback');
-            if (feedbackDiv.length === 0) {
-                feedbackDiv = $('<div class="grade-feedback text-success small mt-1"></div>');
-                $(this).parent().append(feedbackDiv);
-            }
-            feedbackDiv.text('✓ Nota convertida automáticamente a ' + numValue.toFixed(1));
-            
-            setTimeout(function() {
-                feedbackDiv.fadeOut(function() { $(this).remove(); });
-            }, 3000);
-        } else if (numValue >= 1 && numValue <= 7) {
-            // Already in correct format, just format it
-            $(this).val(numValue.toFixed(1));
-        } else {
-            // Invalid range
-            $(this).val('');
-            var feedbackDiv = $(this).parent().find('.grade-feedback');
-            if (feedbackDiv.length === 0) {
-                feedbackDiv = $('<div class="grade-feedback text-danger small mt-1"></div>');
-                $(this).parent().append(feedbackDiv);
-            }
-            feedbackDiv.text('✗ La nota debe estar entre 1.0 y 7.0');
-            
-            setTimeout(function() {
-                feedbackDiv.fadeOut(function() { $(this).remove(); });
-            }, 3000);
-        }
-    });
     
     // Show success message when form is valid
     $('#stt-form').on('submit', function(e) {
