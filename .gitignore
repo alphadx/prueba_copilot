@@ -37,3 +37,5 @@ Thumbs.db
 *.log
 cookies.txt
 login_page.html
+sgdii-tesis/db.sqlite
+sgdii-tesis/runtime/db/*.db

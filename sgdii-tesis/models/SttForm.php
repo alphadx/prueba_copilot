@@ -43,6 +43,9 @@ class SttForm extends Model
     public $empresa_supervisor_telefono;
     public $empresa_supervisor_cargo;
     
+    // For validation during update - tracks current STT ID
+    public $current_stt_id;
+    
     // For validation
     private $_modalidad;
     
@@ -130,6 +133,7 @@ class SttForm extends Model
     
     /**
      * Validates that student does not have an active thesis
+     * During updates, allows the student to remain in the same STT
      */
     public function validateStudentNotInActiveTesis($attribute)
     {
@@ -139,12 +143,21 @@ class SttForm extends Model
             return;
         }
         
-        // Check if student has an active STT (not rejected or converted)
-        $activeStt = SttAlumno::find()
+        // Build query to check if student has an active STT
+        $query = SttAlumno::find()
             ->joinWith('stt')
             ->where(['stt_alumno.alumno_id' => $alumnoId])
-            ->andWhere(['not in', 'solicitud_tema_tesis.estado', ['Rechazada', 'Convertida a TT']])
-            ->exists();
+            ->andWhere(['not in', 'solicitud_tema_tesis.estado', [
+                SolicitudTemaTesis::ESTADO_RECHAZADA, 
+                SolicitudTemaTesis::ESTADO_CONVERTIDA_A_TT
+            ]]);
+        
+        // Exclude current STT if this is an update operation
+        if (!empty($this->current_stt_id)) {
+            $query->andWhere(['<>', 'solicitud_tema_tesis.id', $this->current_stt_id]);
+        }
+        
+        $activeStt = $query->exists();
         
         if ($activeStt) {
             $this->addError($attribute, 'El alumno ya tiene una solicitud de tema de tesis vigente.');
@@ -246,7 +259,7 @@ class SttForm extends Model
             $stt->profesor_revisor1_propuesto_id = $this->profesor_revisor1_propuesto_id;
             $stt->profesor_revisor2_propuesto_id = $this->profesor_revisor2_propuesto_id;
             $stt->empresa_id = $empresaId;
-            $stt->estado = 'Enviada';
+            $stt->estado = SolicitudTemaTesis::ESTADO_ENVIADA;
             
             // Generate correlativo
             $stt->correlativo = $this->generateCorrelativo();
