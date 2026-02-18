@@ -49,11 +49,56 @@ $this->beginPage();
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
+            <ul class="navbar-nav me-auto">
                 <?php if (!Yii::$app->user->isGuest): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/site/index']) ?>">
+                            <i class="bi bi-house-door"></i> Inicio
+                        </a>
+                    </li>
                     <?php
                     /** @var User $user */
                     $user = Yii::$app->user->identity;
+                    
+                    // Check if user can create STT (professors and admin)
+                    $canCreateSTT = in_array($user->rol, ['profesor', 'admin']);
+                    
+                    // Check if user can access comision (admin or comision_evaluadora)
+                    $canAccessComision = false;
+                    if ($user->rol === 'admin') {
+                        $canAccessComision = true;
+                    } elseif (in_array($user->rol, ['profesor', 'comision_evaluadora'])) {
+                        $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+                        $canAccessComision = $profesor && $profesor->es_comision_evaluadora == 1;
+                    }
+                    ?>
+                    
+                    <?php if ($canCreateSTT): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/stt/create']) ?>">
+                            <i class="bi bi-file-earmark-plus"></i> Nueva STT
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <?php if ($canAccessComision): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/comision/index']) ?>">
+                            <i class="bi bi-clipboard-check"></i> Gestionar Evaluación
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/report/index']) ?>">
+                            <i class="bi bi-bar-chart"></i> Reportes
+                        </a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+            <ul class="navbar-nav ms-auto">
+                <?php if (!Yii::$app->user->isGuest): ?>
+                    <?php
                     $unreadCount = \app\models\Notificacion::getUnreadCount($user->id);
                     ?>
                     <li class="nav-item">
