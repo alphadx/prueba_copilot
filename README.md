@@ -263,12 +263,49 @@ MAIL_PORT=587
 MAIL_ENCRYPTION=tls
 ```
 
+### Sprint 6 (Completado) - Form Logic Fixes, Pretty URLs, Debugging & UI/Loaders
+- ✅ Pretty URLs habilitadas en toda la aplicación
+- ✅ Configuración de reglas URL amigables para todos los controladores
+- ✅ Archivo .htaccess para soporte Apache
+- ✅ Mejoras en lógica de formularios con validación en tiempo real
+- ✅ Loading spinners y estados de carga para todas las operaciones
+- ✅ Skeleton loaders para carga de contenido
+- ✅ Validación de formularios del lado del cliente mejorada
+- ✅ Sistema de toast notifications
+- ✅ Mejoras en layouts y responsividad móvil
+- ✅ Utilidades JavaScript globales para AJAX y manejo de estados
+- ✅ Módulo de depuración Yii2 configurado
+- ✅ CSS mejorado con animaciones y transiciones suaves
+- ✅ Feedback visual para todos los estados de UI (éxito, error, carga)
+
+#### Acceso a las Nuevas Funcionalidades
+
+**URLs Amigables:**
+Todas las URLs ahora son más limpias y legibles:
+- Dashboard: `http://localhost:8080/`
+- Login: `http://localhost:8080/login`
+- Crear STT: `http://localhost:8080/stt/create`
+- Reportes: `http://localhost:8080/reports`
+- Notificaciones: `http://localhost:8080/notifications`
+
+**Herramientas de Depuración:**
+- Debug Toolbar: Disponible en la parte inferior de cada página (solo en desarrollo)
+- Gii Generator: `http://localhost:8080/gii` (generador de código)
+- Logs: Disponibles en `sgdii-tesis/runtime/logs/app.log`
+
+**Estados de Carga:**
+- Todos los formularios muestran un spinner al enviar
+- Los enlaces muestran un loader de página completa
+- Los botones se desactivan durante el procesamiento para evitar dobles envíos
+
 ### Próximos Sprints
 
-#### Sprint 6 - Mejoras futuras
+#### Sprint 7 - Mejoras futuras
 - [ ] Gestión de flujo de tesis (estados: desarrollo, revisión, evaluación, finalizada)
 - [ ] Notificaciones cuando profesor responde solicitud de revisión
 - [ ] Sistema de recordatorios automáticos para STT pendientes
+- [ ] Progressive Web App (PWA) support
+- [ ] WebSocket para actualizaciones en tiempo real
 
 ## Comandos Útiles
 

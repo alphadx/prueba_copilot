@@ -44,8 +44,37 @@ $config = [
         ],
         'db' => $db,
         'urlManager' => [
-            'enablePrettyUrl' => false,
-            'showScriptName' => true,
+            'enablePrettyUrl' => true,
+            'showScriptName' => false,
+            'enableStrictParsing' => false,
+            'rules' => [
+                '' => 'site/index',
+                'login' => 'site/login',
+                'logout' => 'site/logout',
+                
+                // STT routes
+                'stt/create' => 'stt/create',
+                'stt/view/<id:\d+>' => 'stt/view',
+                'stt/<action>' => 'stt/<action>',
+                
+                // Comision routes
+                'comision' => 'comision/index',
+                'comision/review/<id:\d+>' => 'comision/review',
+                'comision/<action>' => 'comision/<action>',
+                
+                // Report routes
+                'reports' => 'report/index',
+                'report/<action>' => 'report/<action>',
+                
+                // Notification routes
+                'notifications' => 'notification/index',
+                'notification/mark-read/<id:\d+>' => 'notification/mark-read',
+                'notification/<action>' => 'notification/<action>',
+                
+                // Default routes
+                '<controller:\w+>/<action:\w+>/<id:\d+>' => '<controller>/<action>',
+                '<controller:\w+>/<action:\w+>' => '<controller>/<action>',
+            ],
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
