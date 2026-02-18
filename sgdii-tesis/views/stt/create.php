@@ -219,9 +219,10 @@ $modalidadesData = [];
 foreach ($modalidades as $modalidad) {
     $modalidadesData[$modalidad->id] = $modalidad->nombre;
 }
+$modalidadesJson = Json::htmlEncode($modalidadesData);
 $this->registerJs(<<<JS
     // Get modalidad names from PHP
-    var modalidades = <?= Json::htmlEncode($modalidadesData) ?>;
+    var modalidades = {$modalidadesJson};
     
     // Function to update form based on modalidad
     function updateFormByModalidad() {
