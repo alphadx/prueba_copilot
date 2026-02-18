@@ -184,7 +184,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                         ) ?>
                                         <?php if ($stt->puedeSerResuelta()): ?>
                                             <?= Html::a(
-                                                '<i class="bi bi-check-circle"></i> Resolver',
+                                                '<i class="bi bi-check-circle"></i> Evaluar',
                                                 ['review', 'id' => $stt->id],
                                                 ['class' => 'btn btn-sm btn-success']
                                             ) ?>

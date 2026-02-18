@@ -66,6 +66,7 @@ class ComisionController extends Controller
     public function actionIndex()
     {
         $request = Yii::$app->request;
+        $user = Yii::$app->user->identity;
         
         // Build query
         $query = SolicitudTemaTesis::find()
@@ -79,7 +80,11 @@ class ComisionController extends Controller
         
         $estado = $request->get('estado');
         if ($estado) {
+            // Apply user's estado filter
             $query->andWhere(['estado' => $estado]);
+        } elseif ($user->rol !== 'admin') {
+            // For non-admin commission members, default to pending states when no filter is set
+            $query->andWhere(['estado' => SolicitudTemaTesis::getEstadosPendientes()]);
         }
         
         $fechaDesde = $request->get('fecha_desde');
