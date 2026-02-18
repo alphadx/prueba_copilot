@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint 6 - UI Loaders Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/site.css">
+    <style>
+        .demo-section {
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">🎨 Sprint 6: UI Loaders & Components Demo</h1>
+        
+        <!-- Page Loader Demo -->
+        <div class="demo-section">
+            <h2>1. Page Loader</h2>
+            <p>Full-page overlay loader for navigation and major operations</p>
+            <button class="btn btn-primary" onclick="showPageLoader()">Show Page Loader (3s)</button>
+        </div>
+        
+        <!-- Button Loading State Demo -->
+        <div class="demo-section">
+            <h2>2. Button Loading States</h2>
+            <p>Buttons show loading spinner during processing</p>
+            <button class="btn btn-success" onclick="simulateButtonLoading(this)">Submit Form</button>
+            <button class="btn btn-info ms-2" onclick="simulateButtonLoading(this)">Save Changes</button>
+            <button class="btn btn-warning ms-2" onclick="simulateButtonLoading(this)">Process Data</button>
+        </div>
+        
+        <!-- Inline Loader Demo -->
+        <div class="demo-section">
+            <h2>3. Inline Loader</h2>
+            <p>Small loader for inline elements: <span class="inline-loader"></span> Loading...</p>
+        </div>
+        
+        <!-- Skeleton Loaders Demo -->
+        <div class="demo-section">
+            <h2>4. Skeleton Loaders</h2>
+            <p>Placeholder loaders while content is loading</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text" style="width: 70%;"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="skeleton skeleton-card"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card Loading State Demo -->
+        <div class="demo-section">
+            <h2>5. Card Loading State</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card" id="demoCard">
+                        <div class="card-body">
+                            <h5 class="card-title">Normal Card</h5>
+                            <p class="card-text">This is a regular card with content.</p>
+                            <button class="btn btn-primary" onclick="toggleCardLoading()">Toggle Loading</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form Validation Demo -->
+        <div class="demo-section">
+            <h2>6. Form Validation States</h2>
+            <form id="demoForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Valid Input</label>
+                        <input type="text" class="form-control is-valid" value="Valid value" readonly>
+                        <div class="valid-feedback">Looks good!</div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Invalid Input</label>
+                        <input type="text" class="form-control is-invalid" value="Invalid" readonly>
+                        <div class="invalid-feedback">Please provide a valid value.</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Alert Demo -->
+        <div class="demo-section">
+            <h2>7. Animated Alerts</h2>
+            <button class="btn btn-primary" onclick="showToast('success')">Success Alert</button>
+            <button class="btn btn-danger ms-2" onclick="showToast('danger')">Error Alert</button>
+            <button class="btn btn-warning ms-2" onclick="showToast('warning')">Warning Alert</button>
+            <button class="btn btn-info ms-2" onclick="showToast('info')">Info Alert</button>
+        </div>
+        
+        <!-- Mobile Responsiveness Demo -->
+        <div class="demo-section">
+            <h2>8. Responsive Grid</h2>
+            <p>Resize browser window to see responsive behavior</p>
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Card 1</h5>
+                            <p>Responsive card</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Card 2</h5>
+                            <p>Responsive card</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Card 3</h5>
+                            <p>Responsive card</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Page Loader (same as in main.php) -->
+    <div class="page-loader" id="pageLoader">
+        <div class="spinner"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show page loader
+        function showPageLoader() {
+            const loader = document.getElementById('pageLoader');
+            loader.classList.add('active');
+            setTimeout(() => {
+                loader.classList.remove('active');
+            }, 3000);
+        }
+        
+        // Simulate button loading
+        function simulateButtonLoading(btn) {
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+            const originalText = btn.textContent;
+            btn.textContent = 'Processing...';
+            
+            setTimeout(() => {
+                btn.classList.remove('btn-loading');
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }, 2000);
+        }
+        
+        // Toggle card loading
+        function toggleCardLoading() {
+            const card = document.getElementById('demoCard');
+            card.classList.toggle('card-loading');
+            
+            if (card.classList.contains('card-loading')) {
+                setTimeout(() => {
+                    card.classList.remove('card-loading');
+                }, 2000);
+            }
+        }
+        
+        // Show toast alerts
+        function showToast(type) {
+            const messages = {
+                success: 'Operation completed successfully!',
+                danger: 'An error occurred. Please try again.',
+                warning: 'Warning: Please review your input.',
+                info: 'Information: Task is processing...'
+            };
+            
+            const container = document.querySelector('.container');
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-' + type + ' alert-dismissible fade show mt-3';
+            alert.setAttribute('role', 'alert');
+            alert.innerHTML = messages[type] + 
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            
+            container.insertBefore(alert, container.firstChild);
+            
+            setTimeout(() => {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
