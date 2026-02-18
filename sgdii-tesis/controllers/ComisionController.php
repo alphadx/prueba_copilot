@@ -66,10 +66,20 @@ class ComisionController extends Controller
     public function actionIndex()
     {
         $request = Yii::$app->request;
+        $user = Yii::$app->user->identity;
         
         // Build query
         $query = SolicitudTemaTesis::find()
             ->joinWith(['modalidad', 'profesorGuiaPropuesto', 'alumnos']);
+        
+        // For comision members (non-admin), show only pending STTs by default
+        if ($user->rol !== 'admin') {
+            $estadoFilter = $request->get('estado');
+            if (!$estadoFilter) {
+                // Default to pending states for commission members
+                $query->andWhere(['estado' => SolicitudTemaTesis::getEstadosPendientes()]);
+            }
+        }
         
         // Apply filters
         $modalidadId = $request->get('modalidad_id');
