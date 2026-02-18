@@ -99,7 +99,7 @@ $this->title = 'Notificaciones';
 </div>
 
 <?php
-$this->registerJsFile('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css', [
+$this->registerCssFile('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css', [
     'position' => \yii\web\View::POS_HEAD
 ]);
 
@@ -153,5 +153,3 @@ JS;
 
 $this->registerJs($js);
 ?>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">

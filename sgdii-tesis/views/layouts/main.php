@@ -45,21 +45,14 @@ $this->beginPage();
                     <li class="nav-item">
                         <a href="<?= Yii::$app->urlManager->createUrl(['/notification/index']) ?>" 
                            class="nav-link position-relative text-white" 
-                           title="Notificaciones">
+                           title="Notificaciones"
+                           id="notification-bell">
                             <i class="bi bi-bell-fill" style="font-size: 1.2rem;"></i>
-                            <?php if ($unreadCount > 0): ?>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                                      id="notification-badge" 
-                                      style="font-size: 0.7rem;">
-                                    <?= $unreadCount ?>
-                                </span>
-                            <?php else: ?>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                                      id="notification-badge" 
-                                      style="font-size: 0.7rem; display: none;">
-                                    0
-                                </span>
-                            <?php endif; ?>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+                                  id="notification-badge" 
+                                  style="font-size: 0.7rem; <?= $unreadCount > 0 ? '' : 'display: none;' ?>">
+                                <?= $unreadCount ?>
+                            </span>
                         </a>
                     </li>
                     <li class="nav-item">
