@@ -123,9 +123,9 @@ $isComision = $user->rol === 'comision_evaluadora' || $user->rol === 'admin';
                                 <?php endif; ?>
                                 
                                 <?php if ($isComision && $stt->puedeSerResuelta()): ?>
-                                    <?= Html::a('<i class="bi bi-check-circle"></i>', ['/comision/review', 'id' => $stt->id], [
-                                        'class' => 'btn btn-sm btn-outline-success',
-                                        'title' => 'Revisar STT',
+                                    <?= Html::a('<i class="bi bi-clipboard-check"></i> Evaluar', ['/comision/review', 'id' => $stt->id], [
+                                        'class' => 'btn btn-sm btn-success',
+                                        'title' => 'Evaluar STT',
                                     ]) ?>
                                 <?php endif; ?>
                             </td>

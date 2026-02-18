@@ -12,6 +12,13 @@ $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
 
+// Add cache control headers for authenticated pages to prevent access after logout
+if (!Yii::$app->user->isGuest) {
+    Yii::$app->response->headers->set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    Yii::$app->response->headers->set('Pragma', 'no-cache');
+    Yii::$app->response->headers->set('Expires', 'Thu, 01 Jan 1970 00:00:00 GMT');
+}
+
 // PWA Meta Tags
 $this->registerMetaTag(['name' => 'theme-color', 'content' => '#0d6efd']);
 $this->registerMetaTag(['name' => 'mobile-web-app-capable', 'content' => 'yes']);
@@ -98,7 +105,7 @@ $this->beginPage();
                     <?php if ($canAccessComision): ?>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/comision/index']) ?>">
-                            <i class="bi bi-clipboard-check"></i> Gestionar Evaluación
+                            <i class="bi bi-clipboard-check"></i> Resolución de STT
                         </a>
                     </li>
                     <?php endif; ?>

@@ -29,6 +29,18 @@ $config = [
             'identityClass' => 'app\models\User',
             'enableAutoLogin' => true,
             'loginUrl' => ['site/login'],
+            'identityCookie' => [
+                'name' => '_identity',
+                'httpOnly' => true,
+                'secure' => !YII_DEBUG, // Set to true in production (HTTPS)
+            ],
+        ],
+        'session' => [
+            'class' => 'yii\web\Session',
+            'cookieParams' => [
+                'httpOnly' => true,
+                'secure' => !YII_DEBUG, // Set to true in production (HTTPS)
+            ],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
