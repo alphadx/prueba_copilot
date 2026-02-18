@@ -214,7 +214,7 @@ if (categoriasData && categoriasData.labels && categoriasData.labels.length > 0)
     
     // Generate dynamic colors for all categories
     const generateColor = (index, total) => {
-        const hue = (index * 360 / total) % 360;
+        const hue = index * 360 / total;
         return `hsla(\${hue}, 70%, 60%, 0.8)`;
     };
     

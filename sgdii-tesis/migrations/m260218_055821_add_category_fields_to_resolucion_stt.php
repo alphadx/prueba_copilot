@@ -18,6 +18,11 @@ class m260218_055821_add_category_fields_to_resolucion_stt extends Migration
         // Create indexes for better query performance
         $this->createIndex('idx-resolucion_stt-categoria_id', '{{%resolucion_stt}}', 'categoria_id');
         $this->createIndex('idx-resolucion_stt-subcategoria_id', '{{%resolucion_stt}}', 'subcategoria_id');
+        
+        // Note: SQLite does not support adding foreign keys after table creation.
+        // For production with MySQL/PostgreSQL, foreign key constraints should be added.
+        // For this SQLite prototype, referential integrity is enforced at the application level
+        // through model validation rules (see ResolucionStt::rules()).
     }
 
     /**
