@@ -9,7 +9,10 @@
         "php": ">=8.0",
         "yiisoft/yii2": "~2.0.51",
         "yiisoft/yii2-bootstrap5": "~2.0.0",
-        "yidas/yii2-bower-asset": "~2.0.13"
+        "yidas/yii2-bower-asset": "~2.0.13",
+        "phpoffice/phpspreadsheet": "^1.29",
+        "tecnickcom/tcpdf": "^6.6",
+        "kartik-v/yii2-mpdf": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
