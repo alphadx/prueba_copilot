@@ -220,10 +220,55 @@ Para acceder a los reportes:
 - **Reporte de Estudiante**: Solo para alumnos y admin. Seguimiento personal de tesis.
 - **Estadísticas Generales**: Disponible para todos. Gráficas interactivas con 5 visualizaciones clave.
 
+### Sprint 5 (Completado) - Sistema de Notificaciones Interno y Externo
+- ✅ Sistema de notificaciones interno con persistencia en base de datos
+- ✅ Tabla `notificaciones` con campos: id, tipo, contenido, estado, usuario_destinatario_id, stt_id, timestamps
+- ✅ Modelo `Notificacion` con métodos para marcar como leída y obtener conteo de no leídas
+- ✅ Componente `NotificationService` centralizado para creación y envío de notificaciones
+- ✅ Integración de notificaciones en eventos clave:
+  - **Alumnos**: Notificados cuando la comisión acepta, rechaza o acepta con observaciones una STT
+  - **Profesores**: Notificados cuando se resuelve una STT en la que participan como guía o revisor
+  - **Comisión**: Notificados cuando se registra una nueva STT para revisión
+- ✅ Ícono de campana en navbar con contador de notificaciones no leídas
+- ✅ Panel de notificaciones con filtros (todas/no leídas/leídas)
+- ✅ Funcionalidad para marcar notificaciones como leídas (individual y todas)
+- ✅ Sistema de correos electrónicos automáticos configurado (con Swift Mailer)
+- ✅ Templates de email con diseño responsive
+
+#### Acceso al Sistema de Notificaciones
+Para ver las notificaciones:
+
+1. Iniciar sesión con cualquier usuario válido
+2. Observar el ícono de campana en la barra de navegación superior (muestra el contador de notificaciones no leídas)
+3. Hacer clic en el ícono de campana para acceder al panel de notificaciones
+4. La URL directa es: `http://localhost:8080/index.php?r=notification/index`
+
+**Eventos que generan notificaciones:**
+- Creación de una nueva STT → Notifica a la comisión evaluadora y administradores
+- Resolución de STT (aceptar/rechazar/aceptar con observaciones) → Notifica a alumnos y profesores involucrados
+- Todas las notificaciones se guardan en la base de datos y se envían por email
+
+#### Configuración de Correos Electrónicos
+El sistema está configurado para enviar correos automáticos. Por defecto, en desarrollo, los emails se guardan en archivos en `sgdii-tesis/runtime/mail/`.
+
+Para configurar SMTP en producción, agregar las siguientes variables al archivo `.env`:
+
+```bash
+# Email Configuration
+MAIL_USE_FILE_TRANSPORT=false
+MAIL_HOST=smtp.ejemplo.com
+MAIL_USERNAME=tu-usuario@ejemplo.com
+MAIL_PASSWORD=tu-contraseña
+MAIL_PORT=587
+MAIL_ENCRYPTION=tls
+```
+
 ### Próximos Sprints
 
-#### Sprint 5 - Mejoras futuras
-- [ ] Notificaciones por email reales (actualmente simuladas)
+#### Sprint 6 - Mejoras futuras
+- [ ] Gestión de flujo de tesis (estados: desarrollo, revisión, evaluación, finalizada)
+- [ ] Notificaciones cuando profesor responde solicitud de revisión
+- [ ] Sistema de recordatorios automáticos para STT pendientes
 
 ## Comandos Útiles
 

@@ -14,11 +14,11 @@ class m260218_000001_create_notificaciones_table extends Migration
     {
         $this->createTable('{{%notificaciones}}', [
             'id' => $this->primaryKey(),
-            'tipo' => $this->string(100)->notNull()->comment('Tipo de notificación'),
-            'contenido' => $this->text()->notNull()->comment('Contenido de la notificación'),
-            'estado' => $this->string(20)->notNull()->defaultValue('No leída')->comment('Estado: No leída/Leída'),
-            'usuario_destinatario_id' => $this->integer()->notNull()->comment('ID del usuario destinatario'),
-            'stt_id' => $this->integer()->null()->comment('ID de la STT relacionada (opcional)'),
+            'tipo' => $this->string(100)->notNull(),
+            'contenido' => $this->text()->notNull(),
+            'estado' => $this->string(20)->notNull()->defaultValue('No leída'),
+            'usuario_destinatario_id' => $this->integer()->notNull(),
+            'stt_id' => $this->integer()->null(),
             'created_at' => $this->timestamp()->defaultExpression('CURRENT_TIMESTAMP'),
             'updated_at' => $this->timestamp()->null(),
         ]);
