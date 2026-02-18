@@ -35,6 +35,7 @@ class TesisController extends Controller
                 'class' => VerbFilter::class,
                 'actions' => [
                     'cambiar-estado' => ['post'],
+                    'responder-revision' => ['post'],
                 ],
             ],
         ];
@@ -150,6 +151,53 @@ class TesisController extends Controller
         } else {
             Yii::$app->session->setFlash('error', 'La tesis ya está en la última etapa.');
         }
+        
+        return $this->redirect(['view', 'id' => $tesis->id]);
+    }
+    
+    /**
+     * Professor responds to review request
+     */
+    public function actionResponderRevision($id)
+    {
+        $tesis = $this->findModel($id);
+        $this->checkAccess($tesis);
+        
+        $user = Yii::$app->user->identity;
+        
+        // Only professors can respond
+        if (!in_array($user->rol, ['profesor', 'comision_evaluadora', 'admin'])) {
+            throw new \yii\web\ForbiddenHttpException('Solo los profesores pueden responder revisiones.');
+        }
+        
+        $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+        if (!$profesor) {
+            throw new \yii\web\NotFoundHttpException('Registro de profesor no encontrado.');
+        }
+        
+        $respuesta = Yii::$app->request->post('respuesta');
+        $tipoRespuesta = Yii::$app->request->post('tipo', 'comentario');
+        
+        if (empty($respuesta)) {
+            Yii::$app->session->setFlash('error', 'Debe ingresar una respuesta.');
+            return $this->redirect(['view', 'id' => $tesis->id]);
+        }
+        
+        // Save response to history
+        $historial = new HistorialEstado();
+        $historial->tesis_id = $tesis->id;
+        $historial->estado_anterior = $tesis->estado;
+        $historial->estado_nuevo = $tesis->estado;
+        $historial->motivo = "[Respuesta de {$profesor->nombre}]: {$respuesta}";
+        $historial->usuario_id = $user->id;
+        $historial->fecha_cambio = date('Y-m-d H:i:s');
+        $historial->save();
+        
+        // Send notifications about professor response
+        $notificationService = Yii::$app->notificationService;
+        $notificationService->notifyAboutProfessorResponse($tesis, $profesor, $respuesta, $tipoRespuesta);
+        
+        Yii::$app->session->setFlash('success', 'Su respuesta ha sido registrada y se han enviado notificaciones.');
         
         return $this->redirect(['view', 'id' => $tesis->id]);
     }

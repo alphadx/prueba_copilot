@@ -165,6 +165,73 @@ $puedeGestionar = $user->rol !== 'alumno' && $tesis->puedeActualizar();
         </div>
     <?php endif; ?>
 
+    <!-- Professor Review Response (Only for professors) -->
+    <?php if (in_array($user->rol, ['profesor', 'comision_evaluadora', 'admin'])): ?>
+        <?php 
+        $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+        $puedeResponder = $profesor && (
+            $tesis->profesor_guia_id === $profesor->id ||
+            $tesis->profesor_revisor1_id === $profesor->id ||
+            $tesis->profesor_revisor2_id === $profesor->id
+        );
+        ?>
+        
+        <?php if ($puedeResponder): ?>
+            <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-chat-right-text"></i> Responder Revisión</h5>
+                </div>
+                <div class="card-body">
+                    <?php $form = ActiveForm::begin([
+                        'action' => ['responder-revision', 'id' => $tesis->id],
+                        'method' => 'post',
+                    ]); ?>
+
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label>Tipo de Respuesta</label>
+                                <?= Html::dropDownList(
+                                    'tipo',
+                                    'comentario',
+                                    [
+                                        'comentario' => 'Comentario',
+                                        'acepta' => 'Acepta Revisión',
+                                        'rechaza' => 'Requiere Cambios'
+                                    ],
+                                    ['class' => 'form-select', 'required' => true]
+                                ) ?>
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="form-group">
+                                <label>Respuesta / Comentarios</label>
+                                <?= Html::textarea('respuesta', '', [
+                                    'class' => 'form-control',
+                                    'rows' => 3,
+                                    'placeholder' => 'Ingrese su respuesta o comentarios sobre la revisión...',
+                                    'required' => true
+                                ]) ?>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <?= Html::submitButton(
+                                '<i class="bi bi-send"></i> Enviar',
+                                ['class' => 'btn btn-success w-100']
+                            ) ?>
+                        </div>
+                    </div>
+
+                    <?php ActiveForm::end(); ?>
+                    
+                    <div class="alert alert-info mt-3 mb-0">
+                        <small><i class="bi bi-info-circle"></i> Su respuesta será notificada a todos los involucrados en esta tesis.</small>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <!-- History Card -->
     <div class="card">
         <div class="card-header">
