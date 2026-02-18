@@ -743,10 +743,10 @@ class ReportController extends Controller
             return $data;
         } catch (\Exception $e) {
             Yii::error('Error loading category distribution: ' . $e->getMessage(), __METHOD__);
+            // Return empty data structure for consistency
             return [
                 'labels' => [],
                 'values' => [],
-                'error' => 'Error al cargar la distribución de categorías'
             ];
         }
     }

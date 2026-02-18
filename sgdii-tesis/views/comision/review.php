@@ -420,8 +420,15 @@ $this->registerJs(<<<JS
             success: function(data) {
                 $('#profesorCargaContent').html(data);
             },
-            error: function() {
-                $('#profesorCargaContent').html('<div class="alert alert-danger">Error al cargar la información del profesor.</div>');
+            error: function(xhr, status, error) {
+                console.error('Error loading professor workload:', error);
+                var errorMsg = 'Error al cargar la información del profesor.';
+                if (xhr.status === 404) {
+                    errorMsg = 'Profesor no encontrado.';
+                } else if (xhr.status === 500) {
+                    errorMsg = 'Error del servidor al cargar los datos.';
+                }
+                $('#profesorCargaContent').html('<div class="alert alert-danger"><i class="bi bi-exclamation-triangle"></i> ' + errorMsg + '</div>');
             }
         });
     });
