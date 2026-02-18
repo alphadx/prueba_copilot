@@ -28,6 +28,11 @@ class WebSocketService extends Component
     
     /**
      * Start WebSocket server (to be run as a daemon)
+     * 
+     * To gracefully stop the server:
+     * - Send SIGTERM signal: kill -TERM <pid>
+     * - Or implement signal handlers with pcntl_signal()
+     * For production use, consider using a process manager like Supervisor
      */
     public function start()
     {
@@ -159,7 +164,10 @@ class WebSocketService extends Component
         $encoded = $this->encode(json_encode($message));
         
         foreach ($this->clients as $client) {
-            @socket_write($client, $encoded, strlen($encoded));
+            $result = socket_write($client, $encoded, strlen($encoded));
+            if ($result === false) {
+                Yii::warning('Failed to send message to client: ' . socket_strerror(socket_last_error($client)), __METHOD__);
+            }
         }
     }
     

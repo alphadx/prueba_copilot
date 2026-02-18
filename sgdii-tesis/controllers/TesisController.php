@@ -67,7 +67,8 @@ class TesisController extends Controller
             // Show theses where user is one of the students
             $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
             if ($alumno) {
-                $query->joinWith('stt.sttAlumnos')->where(['stt_alumno.alumno_id' => $alumno->id]);
+                $query->joinWith('stt.sttAlumnos')
+                      ->where([\app\models\SttAlumno::tableName() . '.alumno_id' => $alumno->id]);
             } else {
                 // No alumno record, show empty
                 $query->where('1=0');
@@ -91,6 +92,7 @@ class TesisController extends Controller
         $this->checkAccess($tesis);
         
         $historial = HistorialEstado::find()
+            ->with('usuario') // Eager load users to prevent N+1 query
             ->where(['tesis_id' => $id])
             ->orderBy(['fecha_cambio' => SORT_DESC])
             ->all();

@@ -266,10 +266,7 @@ $puedeGestionar = $user->rol !== 'alumno' && $tesis->puedeActualizar();
                                     <td><span class="badge bg-primary"><?= Html::encode($h->estado_nuevo) ?></span></td>
                                     <td><?= Html::encode($h->motivo) ?: '-' ?></td>
                                     <td>
-                                        <?php 
-                                        $usuario = $h->usuario_id ? \app\models\User::findOne($h->usuario_id) : null;
-                                        echo $usuario ? Html::encode($usuario->nombre) : 'Sistema';
-                                        ?>
+                                        <?= $h->usuario ? Html::encode($h->usuario->nombre) : 'Sistema' ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

@@ -199,7 +199,7 @@ class SGDIIWebSocket {
             const urlParams = new URLSearchParams(window.location.search);
             const currentThesisId = urlParams.get('id');
             
-            if (currentThesisId == message.thesis_id) {
+            if (currentThesisId === String(message.thesis_id)) {
                 // Reload page to show updates
                 window.location.reload();
             }
@@ -303,8 +303,10 @@ class SGDIIWebSocket {
 
 // Initialize WebSocket connection when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    // Only connect if user is logged in
-    if (document.querySelector('.navbar .nav-item:has(.btn-outline-light)')) {
+    // Check if user is logged in via body data attribute (more robust than CSS selector)
+    const isLoggedIn = document.body.hasAttribute('data-user-id');
+    
+    if (isLoggedIn) {
         // Initialize WebSocket (adjust URL based on your configuration)
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const host = window.location.hostname;

@@ -37,7 +37,7 @@ $this->beginPage();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/site.css">
 </head>
-<body>
+<body <?= !Yii::$app->user->isGuest ? 'data-user-id="' . Yii::$app->user->id . '"' : '' ?>>
 <?php $this->beginBody() ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
