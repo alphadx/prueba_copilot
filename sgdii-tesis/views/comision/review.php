@@ -3,6 +3,7 @@
 /** @var yii\web\View $this */
 /** @var app\models\SolicitudTemaTesis $model */
 /** @var app\models\Profesor[] $profesores */
+/** @var app\models\Categoria[] $categorias */
 
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
@@ -102,22 +103,64 @@ $this->params['breadcrumbs'][] = $this->title;
                         <table class="table table-sm">
                             <tr>
                                 <th>Profesor Guía:</th>
-                                <td><?= $model->profesorGuiaPropuesto ? Html::encode($model->profesorGuiaPropuesto->nombre) : '<em class="text-muted">No especificado</em>' ?></td>
+                                <td>
+                                    <?php if ($model->profesorGuiaPropuesto): ?>
+                                        <?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>
+                                        <a href="#" class="btn btn-sm btn-outline-info ms-2 ver-carga-profesor" 
+                                           data-profesor-id="<?= $model->profesorGuiaPropuesto->id ?>"
+                                           data-profesor-nombre="<?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>">
+                                            <i class="bi bi-eye"></i> Ver Carga
+                                        </a>
+                                    <?php else: ?>
+                                        <em class="text-muted">No especificado</em>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Revisor 1:</th>
-                                <td><?= $model->profesorRevisor1Propuesto ? Html::encode($model->profesorRevisor1Propuesto->nombre) : '<em class="text-muted">No especificado</em>' ?></td>
+                                <td>
+                                    <?php if ($model->profesorRevisor1Propuesto): ?>
+                                        <?= Html::encode($model->profesorRevisor1Propuesto->nombre) ?>
+                                        <a href="#" class="btn btn-sm btn-outline-info ms-2 ver-carga-profesor" 
+                                           data-profesor-id="<?= $model->profesorRevisor1Propuesto->id ?>"
+                                           data-profesor-nombre="<?= Html::encode($model->profesorRevisor1Propuesto->nombre) ?>">
+                                            <i class="bi bi-eye"></i> Ver Carga
+                                        </a>
+                                    <?php else: ?>
+                                        <em class="text-muted">No especificado</em>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                             <tr>
                                 <th>Revisor 2:</th>
-                                <td><?= $model->profesorRevisor2Propuesto ? Html::encode($model->profesorRevisor2Propuesto->nombre) : '<em class="text-muted">No especificado</em>' ?></td>
+                                <td>
+                                    <?php if ($model->profesorRevisor2Propuesto): ?>
+                                        <?= Html::encode($model->profesorRevisor2Propuesto->nombre) ?>
+                                        <a href="#" class="btn btn-sm btn-outline-info ms-2 ver-carga-profesor" 
+                                           data-profesor-id="<?= $model->profesorRevisor2Propuesto->id ?>"
+                                           data-profesor-nombre="<?= Html::encode($model->profesorRevisor2Propuesto->nombre) ?>">
+                                            <i class="bi bi-eye"></i> Ver Carga
+                                        </a>
+                                    <?php else: ?>
+                                        <em class="text-muted">No especificado</em>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         </table>
                     <?php elseif ($model->modalidad_id == 2): // Papers ?>
                         <h6 class="mt-3"><i class="bi bi-person-badge"></i> Profesor Propuesto</h6>
                         <p>
                             <strong>Profesor Guía:</strong> 
-                            <?= $model->profesorGuiaPropuesto ? Html::encode($model->profesorGuiaPropuesto->nombre) : '<em class="text-muted">No especificado</em>' ?>
+                            <?php if ($model->profesorGuiaPropuesto): ?>
+                                <?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>
+                                <a href="#" class="btn btn-sm btn-outline-info ms-2 ver-carga-profesor" 
+                                   data-profesor-id="<?= $model->profesorGuiaPropuesto->id ?>"
+                                   data-profesor-nombre="<?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>">
+                                    <i class="bi bi-eye"></i> Ver Carga
+                                </a>
+                            <?php else: ?>
+                                <em class="text-muted">No especificado</em>
+                            <?php endif; ?>
                         </p>
                     <?php elseif ($model->modalidad_id == 3): // Pasantía ?>
                         <h6 class="mt-3"><i class="bi bi-building"></i> Información de Empresa</h6>
@@ -143,7 +186,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         <h6 class="mt-3"><i class="bi bi-person-badge"></i> Profesor Propuesto</h6>
                         <p>
                             <strong>Profesor Guía:</strong> 
-                            <?= $model->profesorGuiaPropuesto ? Html::encode($model->profesorGuiaPropuesto->nombre) : '<em class="text-muted">No especificado</em>' ?>
+                            <?php if ($model->profesorGuiaPropuesto): ?>
+                                <?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>
+                                <a href="#" class="btn btn-sm btn-outline-info ms-2 ver-carga-profesor" 
+                                   data-profesor-id="<?= $model->profesorGuiaPropuesto->id ?>"
+                                   data-profesor-nombre="<?= Html::encode($model->profesorGuiaPropuesto->nombre) ?>">
+                                    <i class="bi bi-eye"></i> Ver Carga
+                                </a>
+                            <?php else: ?>
+                                <em class="text-muted">No especificado</em>
+                            <?php endif; ?>
                         </p>
                     <?php endif; ?>
                 </div>
@@ -163,6 +215,36 @@ $this->params['breadcrumbs'][] = $this->title;
                             'action' => ['resolve', 'id' => $model->id],
                             'method' => 'post',
                         ]); ?>
+
+                        <div class="mb-3">
+                            <label class="form-label">Categoría <span class="text-danger">*</span></label>
+                            <?= Html::dropDownList('categoria_id', null, 
+                                \yii\helpers\ArrayHelper::map($categorias, 'id', 'nombre'), 
+                                [
+                                    'class' => 'form-select',
+                                    'id' => 'categoria-select',
+                                    'prompt' => '-- Seleccione una Categoría --',
+                                    'required' => true
+                                ]
+                            ) ?>
+                            <small class="text-muted">Seleccione la categoría temática de la tesis.</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Subcategoría <span class="text-danger">*</span></label>
+                            <?= Html::dropDownList('subcategoria_id', null, [], 
+                                [
+                                    'class' => 'form-select',
+                                    'id' => 'subcategoria-select',
+                                    'prompt' => '-- Seleccione una Subcategoría --',
+                                    'required' => true,
+                                    'disabled' => true
+                                ]
+                            ) ?>
+                            <small class="text-muted">Seleccione la subcategoría específica (se carga según la categoría seleccionada).</small>
+                        </div>
+
+                        <hr class="my-3">
 
                         <div class="mb-3">
                             <label class="form-label">Tipo de Resolución <span class="text-danger">*</span></label>
@@ -261,9 +343,89 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
+<!-- Modal for Professor Workload -->
+<div class="modal fade" id="profesorCargaModal" tabindex="-1" aria-labelledby="profesorCargaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="profesorCargaModalLabel">Carga de Trabajo del Profesor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="profesorCargaContent">
+                <div class="text-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php
-// JavaScript for form validation and dynamic field display
+// JavaScript for form validation, dynamic field display, and workload modal
 $this->registerJs(<<<JS
+    // Load subcategories when category changes
+    $('#categoria-select').on('change', function() {
+        var categoriaId = $(this).val();
+        var subcategoriaSelect = $('#subcategoria-select');
+        
+        if (categoriaId) {
+            $.ajax({
+                url: '/comision/get-subcategorias',
+                type: 'GET',
+                data: { id: categoriaId },
+                dataType: 'json',
+                success: function(data) {
+                    subcategoriaSelect.empty();
+                    subcategoriaSelect.append('<option value="">-- Seleccione una Subcategoría --</option>');
+                    
+                    if (data.length > 0) {
+                        $.each(data, function(index, subcategoria) {
+                            subcategoriaSelect.append('<option value="' + subcategoria.id + '">' + subcategoria.nombre + '</option>');
+                        });
+                        subcategoriaSelect.prop('disabled', false);
+                    } else {
+                        subcategoriaSelect.append('<option value="">No hay subcategorías disponibles</option>');
+                        subcategoriaSelect.prop('disabled', true);
+                    }
+                },
+                error: function() {
+                    alert('Error al cargar las subcategorías. Por favor, intente nuevamente.');
+                }
+            });
+        } else {
+            subcategoriaSelect.empty();
+            subcategoriaSelect.append('<option value="">-- Seleccione una Subcategoría --</option>');
+            subcategoriaSelect.prop('disabled', true);
+        }
+    });
+    
+    // Show professor workload modal
+    $(document).on('click', '.ver-carga-profesor', function(e) {
+        e.preventDefault();
+        var profesorId = $(this).data('profesor-id');
+        var profesorNombre = $(this).data('profesor-nombre');
+        
+        $('#profesorCargaModalLabel').text('Carga de Trabajo: ' + profesorNombre);
+        $('#profesorCargaContent').html('<div class="text-center"><div class="spinner-border" role="status"><span class="visually-hidden">Cargando...</span></div></div>');
+        
+        var modal = new bootstrap.Modal(document.getElementById('profesorCargaModal'));
+        modal.show();
+        
+        $.ajax({
+            url: '/comision/profesor-theses',
+            type: 'GET',
+            data: { id: profesorId },
+            success: function(data) {
+                $('#profesorCargaContent').html(data);
+            },
+            error: function() {
+                $('#profesorCargaContent').html('<div class="alert alert-danger">Error al cargar la información del profesor.</div>');
+            }
+        });
+    });
+    
     // Show/hide fields based on resolution type
     $('input[name="resolucion"]').on('change', function() {
         var resolucion = $(this).val();
@@ -296,9 +458,21 @@ $this->registerJs(<<<JS
         var resolucion = $('input[name="resolucion"]:checked').val();
         var motivo = $('#motivo').val().trim();
         var observaciones = $('#observaciones').val().trim();
+        var categoriaId = $('#categoria-select').val();
+        var subcategoriaId = $('#subcategoria-select').val();
         
         if (!resolucion) {
             alert('Por favor, seleccione un tipo de resolución.');
+            return false;
+        }
+        
+        if (!categoriaId) {
+            alert('Por favor, seleccione una categoría.');
+            return false;
+        }
+        
+        if (!subcategoriaId) {
+            alert('Por favor, seleccione una subcategoría.');
             return false;
         }
         

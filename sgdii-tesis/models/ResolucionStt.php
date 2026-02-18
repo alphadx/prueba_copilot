@@ -14,10 +14,14 @@ use yii\db\ActiveRecord;
  * @property string $motivo
  * @property int $usuario_id
  * @property string $fecha_resolucion
+ * @property int $categoria_id
+ * @property int $subcategoria_id
  * @property string $created_at
  *
  * @property SolicitudTemaTesis $stt
  * @property User $usuario
+ * @property Categoria $categoria
+ * @property Subcategoria $subcategoria
  */
 class ResolucionStt extends ActiveRecord
 {
@@ -36,12 +40,14 @@ class ResolucionStt extends ActiveRecord
     {
         return [
             [['stt_id', 'tipo', 'motivo', 'usuario_id'], 'required'],
-            [['stt_id', 'usuario_id'], 'integer'],
+            [['stt_id', 'usuario_id', 'categoria_id', 'subcategoria_id'], 'integer'],
             [['motivo'], 'string'],
             [['fecha_resolucion', 'created_at'], 'safe'],
             [['tipo'], 'string', 'max' => 50],
             [['stt_id'], 'exist', 'skipOnError' => true, 'targetClass' => SolicitudTemaTesis::class, 'targetAttribute' => ['stt_id' => 'id']],
             [['usuario_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['usuario_id' => 'id']],
+            [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categoria::class, 'targetAttribute' => ['categoria_id' => 'id']],
+            [['subcategoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Subcategoria::class, 'targetAttribute' => ['subcategoria_id' => 'id']],
         ];
     }
 
@@ -57,6 +63,8 @@ class ResolucionStt extends ActiveRecord
             'motivo' => 'Motivo',
             'usuario_id' => 'Usuario',
             'fecha_resolucion' => 'Fecha de Resolución',
+            'categoria_id' => 'Categoría',
+            'subcategoria_id' => 'Subcategoría',
             'created_at' => 'Creado',
         ];
     }
@@ -79,5 +87,25 @@ class ResolucionStt extends ActiveRecord
     public function getUsuario()
     {
         return $this->hasOne(User::class, ['id' => 'usuario_id']);
+    }
+
+    /**
+     * Gets query for [[Categoria]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCategoria()
+    {
+        return $this->hasOne(Categoria::class, ['id' => 'categoria_id']);
+    }
+
+    /**
+     * Gets query for [[Subcategoria]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSubcategoria()
+    {
+        return $this->hasOne(Subcategoria::class, ['id' => 'subcategoria_id']);
     }
 }

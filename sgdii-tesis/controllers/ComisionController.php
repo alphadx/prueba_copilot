@@ -13,6 +13,8 @@ use app\models\Profesor;
 use app\models\Modalidad;
 use app\models\Tesis;
 use app\models\HistorialEstado;
+use app\models\Categoria;
+use app\models\Subcategoria;
 
 /**
  * Controller for Comisión Evaluadora - STT Resolution
@@ -134,6 +136,7 @@ class ComisionController extends Controller
         return $this->render('review', [
             'model' => $stt,
             'profesores' => Profesor::find()->where(['activo' => 1])->all(),
+            'categorias' => Categoria::find()->where(['activo' => 1])->all(),
         ]);
     }
 
@@ -158,6 +161,8 @@ class ComisionController extends Controller
         $resolucion = $request->post('resolucion');
         $motivo = $request->post('motivo');
         $observaciones = $request->post('observaciones');
+        $categoriaId = $request->post('categoria_id');
+        $subcategoriaId = $request->post('subcategoria_id');
         $userId = Yii::$app->user->id;
         
         $transaction = Yii::$app->db->beginTransaction();
@@ -198,6 +203,8 @@ class ComisionController extends Controller
                 $resolucionRecord->motivo = $resolucion === 'aceptar_con_observaciones' ? $observaciones : $motivo;
                 $resolucionRecord->usuario_id = $userId;
                 $resolucionRecord->fecha_resolucion = date('Y-m-d H:i:s');
+                $resolucionRecord->categoria_id = $categoriaId ?: null;
+                $resolucionRecord->subcategoria_id = $subcategoriaId ?: null;
                 $resolucionRecord->save(false);
                 
                 $transaction->commit();
@@ -267,6 +274,24 @@ class ComisionController extends Controller
             'tesisComoRevisor1' => $tesisComoRevisor1,
             'tesisComoRevisor2' => $tesisComoRevisor2,
         ]);
+    }
+
+    /**
+     * Get subcategories by category ID (AJAX endpoint)
+     * @param integer $id Category ID
+     * @return mixed
+     */
+    public function actionGetSubcategorias($id)
+    {
+        Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        
+        $subcategorias = Subcategoria::find()
+            ->where(['categoria_id' => $id, 'activo' => 1])
+            ->select(['id', 'nombre'])
+            ->asArray()
+            ->all();
+        
+        return $subcategorias;
     }
 
     /**
