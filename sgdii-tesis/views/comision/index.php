@@ -17,6 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="comision-index">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><?= Html::encode($this->title) ?></h1>
+        <?= Html::a('<i class="bi bi-arrow-left"></i> Volver al Dashboard', ['/site/index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 
     <!-- Filters Section -->
