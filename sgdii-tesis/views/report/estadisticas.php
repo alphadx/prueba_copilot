@@ -158,7 +158,8 @@ $tiemposData = json_encode($chartsData['tiemposResolucion']);
 
 $this->registerJs(<<<JS
 // Constants
-const NO_DATA_MESSAGE = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico.';
+const NO_DATA_MESSAGE = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico.</div>';
+const NO_DATA_MESSAGE_PREFIX = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico. ';
 
 // Chart 1: Bar Chart - Modalities Distribution
 const modalidadesData = $modalidadesData;
@@ -203,7 +204,7 @@ if (modalidadesData && modalidadesData.labels && modalidadesData.labels.length >
     });
 } else {
     const container = document.getElementById('modalidadesChart').parentElement;
-    container.innerHTML = NO_DATA_MESSAGE + '</div>';
+    container.innerHTML = NO_DATA_MESSAGE;
 }
 
 // Chart 2: Pie Chart - Categories
@@ -266,7 +267,7 @@ if (categoriasData && categoriasData.labels && categoriasData.labels.length > 0)
 } else {
     // Show "no data available" message
     const container = document.getElementById('categoriasChart').parentElement;
-    container.innerHTML = NO_DATA_MESSAGE + ' Asegúrese de que existen categorías activas configuradas en el sistema.</div>';
+    container.innerHTML = NO_DATA_MESSAGE_PREFIX + 'Asegúrese de que existen categorías activas configuradas en el sistema.</div>';
 }
 
 // Chart 3: Line Chart - Monthly Evolution
@@ -302,7 +303,7 @@ if (evolucionData && evolucionData.labels && evolucionData.labels.length > 0) {
     });
 } else {
     const container = document.getElementById('evolucionChart').parentElement;
-    container.innerHTML = NO_DATA_MESSAGE + '</div>';
+    container.innerHTML = NO_DATA_MESSAGE;
 }
 
 // Chart 4: Stacked Bar Chart - Modality by State
@@ -346,7 +347,7 @@ if (modalidadEstadoData && modalidadEstadoData.labels && modalidadEstadoData.lab
     });
 } else {
     const container = document.getElementById('modalidadEstadoChart').parentElement;
-    container.innerHTML = NO_DATA_MESSAGE + '</div>';
+    container.innerHTML = NO_DATA_MESSAGE;
 }
 
 // Chart 5: Grouped Bar Chart - Resolution Times

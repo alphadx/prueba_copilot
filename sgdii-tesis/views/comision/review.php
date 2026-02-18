@@ -364,7 +364,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php
 // JavaScript for form validation, dynamic field display, and workload modal
+$getSubcategoriasUrl = \yii\helpers\Url::to(['comision/get-subcategorias']);
+$profesorThesesUrl = \yii\helpers\Url::to(['comision/profesor-theses']);
+
 $this->registerJs(<<<JS
+    // URLs from Yii routing
+    const getSubcategoriasUrl = '$getSubcategoriasUrl';
+    const profesorThesesUrl = '$profesorThesesUrl';
+    
     // Load subcategories when category changes
     $('#categoria-select').on('change', function() {
         var categoriaId = $(this).val();
@@ -372,7 +379,7 @@ $this->registerJs(<<<JS
         
         if (categoriaId) {
             $.ajax({
-                url: '/comision/get-subcategorias',
+                url: getSubcategoriasUrl,
                 type: 'GET',
                 data: { id: categoriaId },
                 dataType: 'json',
@@ -415,7 +422,7 @@ $this->registerJs(<<<JS
         modal.show();
         
         $.ajax({
-            url: '/comision/profesor-theses',
+            url: profesorThesesUrl,
             type: 'GET',
             data: { id: profesorId },
             success: function(data) {
