@@ -91,6 +91,14 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
+        $user = Yii::$app->user->identity;
+        
+        // Regenerate auth key to invalidate "remember me" cookies
+        if ($user !== null) {
+            $user->generateAuthKey();
+            $user->save(false);
+        }
+        
         Yii::$app->user->logout();
         Yii::$app->session->destroy();
 
