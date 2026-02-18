@@ -222,7 +222,7 @@ foreach ($modalidades as $modalidad) {
 $modalidadesJson = Json::htmlEncode($modalidadesData);
 $this->registerJs(<<<JS
     // Get modalidad names from PHP
-    var modalidades = {$modalidadesJson};
+    var modalidades = $modalidadesJson;
     
     // Function to update form based on modalidad
     function updateFormByModalidad() {
