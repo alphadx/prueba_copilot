@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
@@ -214,13 +215,13 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
+$modalidadesData = [];
+foreach ($modalidades as $modalidad) {
+    $modalidadesData[$modalidad->id] = $modalidad->nombre;
+}
 $this->registerJs(<<<JS
     // Get modalidad names from PHP
-    var modalidades = {
-        <?php foreach ($modalidades as $modalidad): ?>
-        <?= $modalidad->id ?>: '<?= $modalidad->nombre ?>',
-        <?php endforeach; ?>
-    };
+    var modalidades = <?= Json::htmlEncode($modalidadesData) ?>;
     
     // Function to update form based on modalidad
     function updateFormByModalidad() {
