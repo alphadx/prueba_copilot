@@ -154,7 +154,7 @@ class SttController extends Controller
         $stt = $this->findModel($id);
         
         // Check if STT can be updated (not yet resolved)
-        if (!in_array($stt->estado, ['Enviada', 'En revisión'])) {
+        if (!in_array($stt->estado, [SolicitudTemaTesis::ESTADO_ENVIADA, SolicitudTemaTesis::ESTADO_EN_REVISION])) {
             Yii::$app->session->setFlash('error', 
                 'No se puede modificar una solicitud que ya ha sido resuelta.'
             );
@@ -186,6 +186,7 @@ class SttController extends Controller
         
         // Populate form model with existing data
         $model = new SttForm();
+        $model->current_stt_id = $stt->id; // Track current STT ID for validation
         $model->origen_id = $stt->origen_id;
         $model->profesor_curso_id = $stt->profesor_curso_id;
         $model->nota = $stt->nota;

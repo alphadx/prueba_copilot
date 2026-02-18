@@ -230,6 +230,7 @@ class SolicitudTemaTesis extends ActiveRecord
      * Constants for STT states
      */
     const ESTADO_SOLICITADA = 'Solicitada';
+    const ESTADO_ENVIADA = 'Enviada';
     const ESTADO_EN_REVISION = 'En revisión';
     const ESTADO_ACEPTADA = 'Aceptada';
     const ESTADO_ACEPTADA_CON_OBSERVACIONES = 'Aceptada con observaciones';
@@ -244,6 +245,7 @@ class SolicitudTemaTesis extends ActiveRecord
     {
         return [
             self::ESTADO_SOLICITADA => 'Solicitada',
+            self::ESTADO_ENVIADA => 'Enviada',
             self::ESTADO_EN_REVISION => 'En revisión',
             self::ESTADO_ACEPTADA => 'Aceptada',
             self::ESTADO_ACEPTADA_CON_OBSERVACIONES => 'Aceptada con observaciones',
@@ -260,6 +262,7 @@ class SolicitudTemaTesis extends ActiveRecord
     {
         return [
             self::ESTADO_SOLICITADA,
+            self::ESTADO_ENVIADA,
             self::ESTADO_EN_REVISION,
         ];
     }

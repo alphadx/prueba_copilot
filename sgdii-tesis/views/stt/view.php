@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $user = Yii::$app->user->identity;
 $canUpdate = false;
 
-if (in_array($model->estado, ['Enviada', 'En revisión'])) {
+if (in_array($model->estado, [SolicitudTemaTesis::ESTADO_ENVIADA, SolicitudTemaTesis::ESTADO_EN_REVISION])) {
     if ($user->rol === 'admin') {
         $canUpdate = true;
     } elseif ($user->rol === 'alumno') {
