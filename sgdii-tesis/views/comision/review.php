@@ -188,7 +188,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="mb-3" id="motivo-container">
-                            <label for="motivo" class="form-label">Motivo de Rechazo</label>
+                            <label for="motivo" class="form-label">Motivo de Rechazo <span class="text-danger" id="motivo-required" style="display: none;">*</span></label>
                             <?= Html::textarea('motivo', '', [
                                 'class' => 'form-control',
                                 'id' => 'motivo',
@@ -201,7 +201,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         </div>
 
                         <div class="mb-3" id="observaciones-container" style="display: none;">
-                            <label for="observaciones" class="form-label">Observaciones <span class="text-danger">*</span></label>
+                            <label for="observaciones" class="form-label">Observaciones <span class="text-danger" id="observaciones-required">*</span></label>
                             <?= Html::textarea('observaciones', '', [
                                 'class' => 'form-control',
                                 'id' => 'observaciones',
@@ -273,16 +273,22 @@ $this->registerJs(<<<JS
             $('#observaciones-container').hide();
             $('#motivo').attr('required', true);
             $('#observaciones').attr('required', false);
+            $('#motivo-required').show();
+            $('#observaciones-required').hide();
         } else if (resolucion === 'aceptar_con_observaciones') {
             $('#motivo-container').hide();
             $('#observaciones-container').show();
             $('#motivo').attr('required', false);
             $('#observaciones').attr('required', true);
+            $('#motivo-required').hide();
+            $('#observaciones-required').show();
         } else {
             $('#motivo-container').hide();
             $('#observaciones-container').hide();
             $('#motivo').attr('required', false);
             $('#observaciones').attr('required', false);
+            $('#motivo-required').hide();
+            $('#observaciones-required').hide();
         }
     });
     
