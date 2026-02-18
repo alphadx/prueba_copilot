@@ -714,26 +714,41 @@ class ReportController extends Controller
 
     /**
      * Get category distribution for charts
+     * Enhanced to show all active categories and handle edge cases
      */
     private function getCategoriasDistribution()
     {
-        $categorias = Categoria::find()->where(['activo' => 1])->all();
-        $data = [
-            'labels' => [],
-            'values' => [],
-        ];
-        
-        foreach ($categorias as $categoria) {
-            $count = Tesis::find()
-                ->where(['categoria_id' => $categoria->id])
-                ->count();
-            if ($count > 0) {
-                $data['labels'][] = $categoria->nombre;
-                $data['values'][] = $count;
+        try {
+            $categorias = Categoria::find()->where(['activo' => 1])->all();
+            $data = [
+                'labels' => [],
+                'values' => [],
+            ];
+            
+            if (empty($categorias)) {
+                Yii::warning('No active categories found in database', __METHOD__);
+                return $data;
             }
+            
+            foreach ($categorias as $categoria) {
+                $count = Tesis::find()
+                    ->where(['categoria_id' => $categoria->id])
+                    ->count();
+                
+                // Include all categories, even with 0 thesis
+                $data['labels'][] = $categoria->nombre;
+                $data['values'][] = (int)$count;
+            }
+            
+            return $data;
+        } catch (\Exception $e) {
+            Yii::error('Error loading category distribution: ' . $e->getMessage(), __METHOD__);
+            // Return empty data structure for consistency
+            return [
+                'labels' => [],
+                'values' => [],
+            ];
         }
-        
-        return $data;
     }
 
     /**
