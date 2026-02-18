@@ -185,13 +185,45 @@ Para acceder a la gestión de STT:
 - **Consulta de carga**: Ver tesis vigentes de cada profesor antes de resolver
 - **Notificaciones**: Se envían automáticamente a alumnos y profesores involucrados
 
+### Sprint 4 (Completado) - Reportes, Estadísticas y Exportación
+- ✅ Reportes según roles (Profesores, Comisión, Estudiantes)
+- ✅ Reporte de carga académica por profesor (tesis como guía y revisor)
+- ✅ Reporte de tesis vigentes con filtros avanzados para comisión
+- ✅ Reporte de seguimiento personal para estudiantes
+- ✅ Gráficas y estadísticas interactivas con Chart.js:
+  - Distribución de modalidades en estados (gráfica de barras)
+  - Categorías principales de tesis (gráfica de torta)
+  - Evolución mensual de STT (gráfica de línea)
+  - Tesis agrupadas por modalidad y estado (gráfica apilada)
+  - Tiempos de resolución por rol (gráfica agrupada)
+- ✅ Indicadores clave del sistema:
+  - Tasa de aceptación y rechazo
+  - Promedio de tiempo de resolución
+  - Promedio de revisores por tesis
+  - Distribución por categorías y modalidades
+- ✅ Exportación de reportes a Excel (.xlsx) con PhpSpreadsheet
+- ✅ Exportación de reportes a PDF con kartik-v/yii2-mpdf
+- ✅ Filtros avanzados para reportes de comisión (modalidad, estado, fechas, profesor)
+- ✅ Control de acceso por roles para cada tipo de reporte
+- ✅ Dashboard de reportes unificado
+
+#### Acceso a los Reportes
+Para acceder a los reportes:
+
+1. Iniciar sesión con cualquier usuario válido
+2. En el dashboard principal, hacer clic en **"Ver Reportes"** en la tarjeta de Reportes y Estadísticas
+3. La URL directa es: `http://localhost:8080/index.php?r=report/index`
+
+**Tipos de reportes disponibles:**
+- **Reporte de Profesor**: Solo para profesores y admin. Muestra tesis bajo supervisión.
+- **Reporte de Comisión**: Solo para comisión evaluadora y admin. Vista completa con filtros.
+- **Reporte de Estudiante**: Solo para alumnos y admin. Seguimiento personal de tesis.
+- **Estadísticas Generales**: Disponible para todos. Gráficas interactivas con 5 visualizaciones clave.
+
 ### Próximos Sprints
 
-#### Sprint 4 - Reportes
-- [ ] Reporte de carga académica por profesor
-- [ ] Reporte de tesis vigentes por etapa
-- [ ] Reporte de seguimiento para memoristas
-- [ ] Exportación de reportes (PDF/Excel)
+#### Sprint 5 - Mejoras futuras
+- [ ] Notificaciones por email reales (actualmente simuladas)
 
 ## Comandos Útiles
 

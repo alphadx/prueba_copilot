@@ -70,10 +70,10 @@ $user = Yii::$app->user->identity;
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="bi bi-bar-chart"></i> Reportes
+                        <i class="bi bi-bar-chart"></i> Reportes y Estadísticas
                     </h5>
-                    <p class="card-text">Reportes de carga académica, seguimiento de tesis y estadísticas generales.</p>
-                    <button class="btn btn-secondary" disabled>Próximamente</button>
+                    <p class="card-text">Reportes de carga académica, seguimiento de tesis y estadísticas generales con gráficas interactivas.</p>
+                    <?= Html::a('Ver Reportes', ['/report/index'], ['class' => 'btn btn-warning']) ?>
                 </div>
             </div>
         </div>
