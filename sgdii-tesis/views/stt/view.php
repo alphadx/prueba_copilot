@@ -11,7 +11,50 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="stt-view">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1><?= Html::encode($this->title) ?></h1>
+        <div>
+            <?php if (in_array($model->estado, ['Enviada', 'En revisión'])): ?>
+                <?php 
+                $user = Yii::$app->user->identity;
+                $canUpdate = false;
+                
+                if ($user->rol === 'admin') {
+                    $canUpdate = true;
+                } elseif ($user->rol === 'alumno') {
+                    $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
+                    foreach ($model->sttAlumnos as $sttAlumno) {
+                        if ($sttAlumno->alumno_id == $alumno->id) {
+                            $canUpdate = true;
+                            break;
+                        }
+                    }
+                } elseif ($user->rol === 'profesor') {
+                    $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+                    if ($model->profesor_curso_id == $profesor->id) {
+                        $canUpdate = true;
+                    }
+                }
+                ?>
+                
+                <?php if ($canUpdate): ?>
+                    <?= Html::a('<i class="bi bi-pencil"></i> Corregir STT', ['update', 'id' => $model->id], [
+                        'class' => 'btn btn-warning'
+                    ]) ?>
+                <?php endif; ?>
+            <?php endif; ?>
+            
+            <?php if (Yii::$app->user->identity->rol === 'admin' || Yii::$app->user->identity->rol === 'comision_evaluadora'): ?>
+                <?php if ($model->puedeSerResuelta()): ?>
+                    <?= Html::a('<i class="bi bi-check-circle"></i> Revisar STT', ['/comision/review', 'id' => $model->id], [
+                        'class' => 'btn btn-success'
+                    ]) ?>
+                <?php endif; ?>
+            <?php endif; ?>
+            
+            <?= Html::a('<i class="bi bi-arrow-left"></i> Volver', ['index'], ['class' => 'btn btn-secondary']) ?>
+        </div>
+    </div>
 
     <div class="card mb-3">
         <div class="card-header">
@@ -109,7 +152,45 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     <?php endif; ?>
 
-    <div class="form-group">
-        <?= Html::a('Volver', ['site/index'], ['class' => 'btn btn-secondary']) ?>
+    <div class="form-group mt-3">
+        <?php if (in_array($model->estado, ['Enviada', 'En revisión'])): ?>
+            <?php 
+            $user = Yii::$app->user->identity;
+            $canUpdate = false;
+            
+            if ($user->rol === 'admin') {
+                $canUpdate = true;
+            } elseif ($user->rol === 'alumno') {
+                $alumno = \app\models\Alumno::findOne(['user_id' => $user->id]);
+                foreach ($model->sttAlumnos as $sttAlumno) {
+                    if ($sttAlumno->alumno_id == $alumno->id) {
+                        $canUpdate = true;
+                        break;
+                    }
+                }
+            } elseif ($user->rol === 'profesor') {
+                $profesor = \app\models\Profesor::findOne(['user_id' => $user->id]);
+                if ($model->profesor_curso_id == $profesor->id) {
+                    $canUpdate = true;
+                }
+            }
+            ?>
+            
+            <?php if ($canUpdate): ?>
+                <?= Html::a('<i class="bi bi-pencil"></i> Corregir STT', ['update', 'id' => $model->id], [
+                    'class' => 'btn btn-warning'
+                ]) ?>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?php if (Yii::$app->user->identity->rol === 'admin' || Yii::$app->user->identity->rol === 'comision_evaluadora'): ?>
+            <?php if ($model->puedeSerResuelta()): ?>
+                <?= Html::a('<i class="bi bi-check-circle"></i> Revisar STT', ['/comision/review', 'id' => $model->id], [
+                    'class' => 'btn btn-success'
+                ]) ?>
+            <?php endif; ?>
+        <?php endif; ?>
+        
+        <?= Html::a('<i class="bi bi-arrow-left"></i> Volver', ['index'], ['class' => 'btn btn-secondary']) ?>
     </div>
 </div>
