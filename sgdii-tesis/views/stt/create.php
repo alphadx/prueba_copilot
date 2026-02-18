@@ -209,13 +209,13 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <?php
+$modalidadesData = [];
+foreach ($modalidades as $modalidad) {
+    $modalidadesData[$modalidad->id] = $modalidad->nombre;
+}
 $this->registerJs(<<<JS
     // Get modalidad names from PHP
-    var modalidades = {
-        <?php foreach ($modalidades as $modalidad): ?>
-        <?= $modalidad->id ?>: '<?= $modalidad->nombre ?>',
-        <?php endforeach; ?>
-    };
+    var modalidades = <?= json_encode($modalidadesData) ?>;
     
     // Function to update form based on modalidad
     function updateFormByModalidad() {
