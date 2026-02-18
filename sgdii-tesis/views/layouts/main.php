@@ -12,6 +12,20 @@ $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
 
+// PWA Meta Tags
+$this->registerMetaTag(['name' => 'theme-color', 'content' => '#0d6efd']);
+$this->registerMetaTag(['name' => 'mobile-web-app-capable', 'content' => 'yes']);
+$this->registerMetaTag(['name' => 'apple-mobile-web-app-capable', 'content' => 'yes']);
+$this->registerMetaTag(['name' => 'apple-mobile-web-app-status-bar-style', 'content' => 'black-translucent']);
+$this->registerMetaTag(['name' => 'apple-mobile-web-app-title', 'content' => 'SGDII Tesis']);
+$this->registerMetaTag(['name' => 'application-name', 'content' => 'SGDII Tesis']);
+$this->registerMetaTag(['name' => 'msapplication-TileColor', 'content' => '#0d6efd']);
+$this->registerLinkTag(['rel' => 'manifest', 'href' => '/manifest.json']);
+$this->registerLinkTag(['rel' => 'apple-touch-icon', 'href' => '/assets/icon-192.png']);
+
+// Register WebSocket client script
+$this->registerJsFile('/js/websocket-client.js', ['position' => \yii\web\View::POS_END]);
+
 $this->beginPage();
 ?>
 <!DOCTYPE html>
@@ -23,7 +37,7 @@ $this->beginPage();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/css/site.css">
 </head>
-<body>
+<body <?= !Yii::$app->user->isGuest ? 'data-user-id="' . Yii::$app->user->id . '"' : '' ?>>
 <?php $this->beginBody() ?>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -249,6 +263,63 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Pretty URLs: <?= Yii::$app->urlManager->enablePrettyUrl ? "✓ Enabled" : "✗ Disabled" ?>');
     <?php endif; ?>
 });
+
+// Service Worker Registration for PWA
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+            .then(function(registration) {
+                console.log('✓ Service Worker registered successfully:', registration.scope);
+                
+                // Check for updates
+                registration.addEventListener('updatefound', function() {
+                    const newWorker = registration.installing;
+                    newWorker.addEventListener('statechange', function() {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            // New service worker available, prompt user to refresh
+                            if (confirm('Nueva versión disponible. ¿Desea actualizar?')) {
+                                newWorker.postMessage({ type: 'SKIP_WAITING' });
+                                window.location.reload();
+                            }
+                        }
+                    });
+                });
+            })
+            .catch(function(error) {
+                console.log('✗ Service Worker registration failed:', error);
+            });
+        
+        // Handle service worker updates
+        let refreshing = false;
+        navigator.serviceWorker.addEventListener('controllerchange', function() {
+            if (!refreshing) {
+                refreshing = true;
+                window.location.reload();
+            }
+        });
+    });
+}
+
+// PWA Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', function(e) {
+    // Prevent the mini-infobar from appearing
+    e.preventDefault();
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    
+    // Show custom install button/banner if desired
+    console.log('PWA Install prompt available');
+    
+    // You can show a custom UI element here to prompt installation
+    // Example: showInstallBanner();
+});
+
+window.addEventListener('appinstalled', function() {
+    console.log('✓ PWA installed successfully');
+    deferredPrompt = null;
+});
+
 </script>
 
 </body>

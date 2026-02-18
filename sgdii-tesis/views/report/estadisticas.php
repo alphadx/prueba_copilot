@@ -300,45 +300,51 @@ new Chart(modalidadEstadoCtx, {
 
 // Chart 5: Grouped Bar Chart - Resolution Times
 const tiemposData = $tiemposData;
-const tiemposCtx = document.getElementById('tiemposResolucionChart').getContext('2d');
-new Chart(tiemposCtx, {
-    type: 'bar',
-    data: {
-        labels: tiemposData.labels,
-        datasets: [
-            {
-                label: 'Como Guía (días)',
-                data: tiemposData.guia,
-                backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                borderColor: 'rgba(54, 162, 235, 1)',
-                borderWidth: 1
-            },
-            {
-                label: 'Como Revisor (días)',
-                data: tiemposData.revisor,
-                backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                borderColor: 'rgba(255, 99, 132, 1)',
-                borderWidth: 1
-            }
-        ]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: { position: 'top' }
+if (tiemposData && tiemposData.labels && tiemposData.labels.length > 0) {
+    const tiemposCtx = document.getElementById('tiemposResolucionChart').getContext('2d');
+    new Chart(tiemposCtx, {
+        type: 'bar',
+        data: {
+            labels: tiemposData.labels,
+            datasets: [
+                {
+                    label: 'Como Guía (días)',
+                    data: tiemposData.guia,
+                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Como Revisor (días)',
+                    data: tiemposData.revisor,
+                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }
+            ]
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Días Promedio'
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: { position: 'top' }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Días Promedio'
+                    }
                 }
             }
         }
-    }
-});
+    });
+} else {
+    // Show "no data" message
+    const container = document.getElementById('tiemposResolucionChart').parentElement;
+    container.innerHTML = '<div class="alert alert-info"><i class="bi bi-info-circle"></i> No hay datos suficientes para mostrar este gráfico. Se requiere al menos un profesor con resoluciones de STT.</div>';
+}
 JS
 , \yii\web\View::POS_READY);
 ?>

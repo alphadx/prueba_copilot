@@ -70,6 +70,20 @@ $user = Yii::$app->user->identity;
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">
+                        <i class="bi bi-list-task"></i> Gestión de Tesis
+                    </h5>
+                    <p class="card-text">Flujo de trabajo completo: desarrollo, revisión, evaluación y finalización de tesis.</p>
+                    <?= Html::a('Ver Mis Tesis', ['/tesis/index'], ['class' => 'btn btn-info']) ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-4 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
                         <i class="bi bi-bar-chart"></i> Reportes y Estadísticas
                     </h5>
                     <p class="card-text">Reportes de carga académica, seguimiento de tesis y estadísticas generales con gráficas interactivas.</p>

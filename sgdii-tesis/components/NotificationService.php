@@ -208,4 +208,109 @@ class NotificationService extends Component
             ]
         );
     }
+    
+    /**
+     * Notify when a professor responds to a review request
+     * @param \app\models\Tesis $tesis
+     * @param \app\models\Profesor $profesor
+     * @param string $respuesta Response text or decision
+     * @param string $tipo Type of response (acepta, rechaza, comentario)
+     */
+    public function notifyAboutProfessorResponse($tesis, $profesor, $respuesta, $tipo = 'comentario')
+    {
+        $accionTexto = [
+            'acepta' => 'ha aceptado',
+            'rechaza' => 'ha rechazado',
+            'comentario' => 'ha respondido a'
+        ];
+        
+        $accion = $accionTexto[$tipo] ?? 'ha respondido a';
+        
+        $contenido = "El profesor {$profesor->nombre} {$accion} la revisión de la tesis '{$tesis->stt->titulo}' (Correlativo: {$tesis->stt->correlativo}).\n\n";
+        $contenido .= "Respuesta: {$respuesta}";
+        
+        // Notify students
+        foreach ($tesis->stt->alumnos as $alumno) {
+            if ($alumno->user_id) {
+                $this->create($alumno->user_id, Notificacion::TIPO_PROFESOR_RESPONDE, $contenido, $tesis->stt_id);
+            }
+        }
+        
+        // Notify guide professor if reviewer responded
+        if ($tesis->profesorGuia && $tesis->profesorGuia->id !== $profesor->id && $tesis->profesorGuia->user_id) {
+            $this->create($tesis->profesorGuia->user_id, Notificacion::TIPO_PROFESOR_RESPONDE, $contenido, $tesis->stt_id);
+        }
+        
+        // Notify other reviewers
+        foreach ([$tesis->profesorRevisor1, $tesis->profesorRevisor2] as $revisor) {
+            if ($revisor && $revisor->id !== $profesor->id && $revisor->user_id) {
+                $this->create($revisor->user_id, Notificacion::TIPO_PROFESOR_RESPONDE, $contenido, $tesis->stt_id);
+            }
+        }
+    }
+    
+    /**
+     * Send reminder notification for pending STTs
+     * @param \app\models\SolicitudTemaTesis $stt
+     * @param array $userIds User IDs to notify
+     */
+    public function sendReminderForPendingSTT($stt, $userIds)
+    {
+        $contenido = "Recordatorio: La Solicitud de Tema de Tesis '{$stt->titulo}' (Correlativo: {$stt->correlativo}) ";
+        $contenido .= "está pendiente de revisión desde el " . Yii::$app->formatter->asDate($stt->fecha_creacion) . ".\n\n";
+        $contenido .= "Por favor, revise y resuelva esta solicitud a la brevedad.";
+        
+        foreach ($userIds as $userId) {
+            $this->create($userId, Notificacion::TIPO_RECORDATORIO, $contenido, $stt->id, true);
+        }
+    }
+    
+    /**
+     * Send bulk reminders for all pending STTs older than X days
+     * @param int $dias Number of days threshold
+     * @return int Number of reminders sent
+     */
+    public function sendRemindersForOldPendingSTTs($dias = 7)
+    {
+        $fechaLimite = date('Y-m-d H:i:s', strtotime("-{$dias} days"));
+        
+        $pendingSTTs = SolicitudTemaTesis::find()
+            ->where(['in', 'estado', [
+                SolicitudTemaTesis::ESTADO_SOLICITADA,
+                SolicitudTemaTesis::ESTADO_EN_REVISION
+            ]])
+            ->andWhere(['<', 'fecha_creacion', $fechaLimite])
+            ->all();
+        
+        $count = 0;
+        
+        // Get committee members
+        $comisionUsers = User::find()
+            ->where(['in', 'rol', ['comision_evaluadora', 'admin']])
+            ->andWhere(['activo' => 1])
+            ->all();
+        
+        $userIds = array_map(fn($u) => $u->id, $comisionUsers);
+        
+        foreach ($pendingSTTs as $stt) {
+            $this->sendReminderForPendingSTT($stt, $userIds);
+            $count++;
+        }
+        
+        return $count;
+    }
+    
+    /**
+     * Alias for create method to maintain backward compatibility
+     * @param string $tipo Notification type
+     * @param string $contenido Notification content
+     * @param int $userId User ID to notify
+     * @param int|null $sttId Related STT ID (optional)
+     * @param bool $sendEmail Whether to send email notification
+     * @return Notificacion|null
+     */
+    public function crearNotificacion($tipo, $contenido, $userId, $sttId = null, $sendEmail = true)
+    {
+        return $this->create($userId, $tipo, $contenido, $sttId, $sendEmail);
+    }
 }
