@@ -200,9 +200,14 @@ $this->params['breadcrumbs'][] = $this->title;
             </div>
         </div>
 
-        <div class="form-group">
-            <?= Html::submitButton('Crear Solicitud', ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('Cancelar', ['site/index'], ['class' => 'btn btn-secondary']) ?>
+        <div class="form-group mt-4">
+            <?= Html::submitButton('<i class="bi bi-check-circle me-2"></i>Crear Solicitud', [
+                'class' => 'btn btn-primary btn-lg',
+                'data-loading-text' => 'Creando solicitud...'
+            ]) ?>
+            <?= Html::a('<i class="bi bi-x-circle me-2"></i>Cancelar', ['site/index'], [
+                'class' => 'btn btn-secondary btn-lg'
+            ]) ?>
         </div>
 
         <?php ActiveForm::end(); ?>
@@ -253,8 +258,47 @@ $this->registerJs(<<<JS
         }
     });
     
+    // Enhanced form validation
+    $('#stt-form').on('beforeValidate', function() {
+        // Add loading state to submit button
+        var submitBtn = $(this).find('button[type="submit"]');
+        submitBtn.addClass('btn-loading');
+    });
+    
+    $('#stt-form').on('afterValidate', function(event, messages, errorAttributes) {
+        var submitBtn = $(this).find('button[type="submit"]');
+        
+        if (errorAttributes.length > 0) {
+            // Remove loading state if there are errors
+            submitBtn.removeClass('btn-loading');
+            
+            // Scroll to first error
+            var firstError = $('.has-error:first, .is-invalid:first');
+            if (firstError.length) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+            }
+            
+            // Show error toast
+            if (typeof window.showToast === 'function') {
+                window.showToast('Por favor, corrija los errores en el formulario.', 'danger');
+            }
+        }
+    });
+    
     // Initialize on page load
     updateFormByModalidad();
+    
+    // Show success message when form is valid
+    $('#stt-form').on('submit', function(e) {
+        var form = $(this);
+        var hasErrors = form.find('.is-invalid, .has-error').length > 0;
+        
+        if (!hasErrors) {
+            console.log('✓ Formulario válido - enviando...');
+        }
+    });
 JS
 );
 ?>

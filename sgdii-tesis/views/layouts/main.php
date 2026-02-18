@@ -81,6 +81,11 @@ $this->beginPage();
     </div>
 </main>
 
+<!-- Page Loader -->
+<div class="page-loader" id="pageLoader">
+    <div class="spinner"></div>
+</div>
+
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container">
         <div class="text-muted text-center">
@@ -93,6 +98,159 @@ $this->beginPage();
 
 <?php $this->endBody() ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Global JavaScript for UI Enhancements -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Show page loader on navigation
+    const pageLoader = document.getElementById('pageLoader');
+    
+    // Add loading state to all links (except anchors and logout)
+    document.querySelectorAll('a:not([href^="#"]):not([href*="logout"])').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            // Only show loader for internal navigation
+            if (!link.target || link.target === '_self') {
+                pageLoader.classList.add('active');
+            }
+        });
+    });
+    
+    // Form submission loading state
+    document.querySelectorAll('form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+            if (submitBtn && !submitBtn.classList.contains('btn-loading')) {
+                submitBtn.classList.add('btn-loading');
+                submitBtn.disabled = true;
+                
+                // Store original text
+                if (!submitBtn.dataset.originalText) {
+                    submitBtn.dataset.originalText = submitBtn.textContent || submitBtn.value;
+                }
+                
+                // Show loading text
+                const loadingText = submitBtn.dataset.loadingText || 'Procesando...';
+                if (submitBtn.tagName === 'BUTTON') {
+                    submitBtn.textContent = loadingText;
+                } else {
+                    submitBtn.value = loadingText;
+                }
+                
+                // Show page loader for POST requests
+                if (form.method.toLowerCase() === 'post') {
+                    pageLoader.classList.add('active');
+                }
+            }
+        });
+    });
+    
+    // Auto-hide alerts after 5 seconds
+    document.querySelectorAll('.alert:not(.alert-important)').forEach(function(alert) {
+        setTimeout(function() {
+            const bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        }, 5000);
+    });
+    
+    // Client-side form validation enhancement
+    document.querySelectorAll('.form-control, .form-select').forEach(function(field) {
+        field.addEventListener('blur', function() {
+            if (this.checkValidity && !this.checkValidity()) {
+                this.classList.add('is-invalid');
+                this.classList.remove('is-valid');
+            } else if (this.value) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            }
+        });
+        
+        field.addEventListener('input', function() {
+            if (this.classList.contains('is-invalid') || this.classList.contains('is-valid')) {
+                if (this.checkValidity && !this.checkValidity()) {
+                    this.classList.add('is-invalid');
+                    this.classList.remove('is-valid');
+                } else if (this.value) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-invalid', 'is-valid');
+                }
+            }
+        });
+    });
+    
+    // Confirm dialogs for dangerous actions
+    document.querySelectorAll('[data-confirm]').forEach(function(element) {
+        element.addEventListener('click', function(e) {
+            if (!confirm(this.dataset.confirm)) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        });
+    });
+    
+    // AJAX request handler with loading states
+    window.ajaxRequest = function(url, options) {
+        options = options || {};
+        const defaultOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        };
+        
+        const fetchOptions = Object.assign({}, defaultOptions, options);
+        
+        // Show loader if specified
+        if (options.showLoader !== false) {
+            pageLoader.classList.add('active');
+        }
+        
+        return fetch(url, fetchOptions)
+            .finally(function() {
+                if (options.showLoader !== false) {
+                    pageLoader.classList.remove('active');
+                }
+            });
+    };
+    
+    // Toast notification system
+    window.showToast = function(message, type) {
+        type = type || 'info';
+        const alertClass = 'alert-' + type;
+        const container = document.querySelector('.container');
+        
+        if (container) {
+            const alert = document.createElement('div');
+            alert.className = 'alert ' + alertClass + ' alert-dismissible fade show mt-3';
+            alert.setAttribute('role', 'alert');
+            alert.innerHTML = message + 
+                '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+            
+            container.insertBefore(alert, container.firstChild);
+            
+            setTimeout(function() {
+                const bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 5000);
+        }
+    };
+    
+    // Hide loader when page is fully loaded
+    window.addEventListener('load', function() {
+        pageLoader.classList.remove('active');
+    });
+    
+    // Debug mode indicator (only in development)
+    <?php if (YII_DEBUG): ?>
+    console.log('%c🚀 SGDII Debug Mode Enabled', 'color: #0d6efd; font-weight: bold; font-size: 14px;');
+    console.log('Pretty URLs: <?= Yii::$app->urlManager->enablePrettyUrl ? "✓ Enabled" : "✗ Disabled" ?>');
+    <?php endif; ?>
+});
+</script>
+
 </body>
 </html>
 <?php $this->endPage() ?>
