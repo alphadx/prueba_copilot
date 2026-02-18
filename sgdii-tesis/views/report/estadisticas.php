@@ -205,32 +205,65 @@ if (modalidadesData && modalidadesData.labels && modalidadesData.labels.length >
 
 // Chart 2: Pie Chart - Categories
 const categoriasData = $categoriasData;
-if (categoriasData.labels.length > 0) {
+if (categoriasData && categoriasData.labels && categoriasData.labels.length > 0) {
     const categoriasCtx = document.getElementById('categoriasChart').getContext('2d');
+    
+    // Generate dynamic colors for all categories
+    const generateColor = (index, total) => {
+        const hue = (index * 360 / total) % 360;
+        return `hsla(\${hue}, 70%, 60%, 0.8)`;
+    };
+    
+    const colors = categoriasData.labels.map((_, index) => 
+        generateColor(index, categoriasData.labels.length)
+    );
+    
+    const borderColors = categoriasData.labels.map((_, index) => 
+        generateColor(index, categoriasData.labels.length).replace('0.8', '1')
+    );
+    
     new Chart(categoriasCtx, {
         type: 'pie',
         data: {
             labels: categoriasData.labels,
             datasets: [{
                 data: categoriasData.values,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.7)',
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(255, 206, 86, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(153, 102, 255, 0.7)',
-                    'rgba(255, 159, 64, 0.7)',
-                ],
-                borderWidth: 1
+                backgroundColor: colors,
+                borderColor: borderColors,
+                borderWidth: 2
             }]
         },
         options: {
             responsive: true,
+            maintainAspectRatio: true,
             plugins: {
-                legend: { position: 'right' }
+                legend: { 
+                    position: 'right',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.label || '';
+                            const value = context.parsed || 0;
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
+                            return label + ': ' + value + ' (' + percentage + '%)';
+                        }
+                    }
+                }
             }
         }
     });
+} else {
+    // Show "no data available" message
+    const container = document.getElementById('categoriasChart').parentElement;
+    container.innerHTML = '<div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> No hay datos disponibles para mostrar este gráfico. Las categorías se mostrarán una vez que existan tesis clasificadas.</div>';
 }
 
 // Chart 3: Line Chart - Monthly Evolution
