@@ -73,10 +73,24 @@ $this->beginPage();
                     }
                     ?>
                     
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/stt/index']) ?>">
+                            <i class="bi bi-list-ul"></i> Solicitudes STT
+                        </a>
+                    </li>
+                    
                     <?php if ($canCreateSTT): ?>
                     <li class="nav-item">
                         <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/stt/create']) ?>">
                             <i class="bi bi-file-earmark-plus"></i> Nueva STT
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <?php if (in_array($user->rol, ['profesor', 'admin', 'alumno'])): ?>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="<?= Yii::$app->urlManager->createUrl(['/tesis/index']) ?>">
+                            <i class="bi bi-book"></i> Tesis
                         </a>
                     </li>
                     <?php endif; ?>
